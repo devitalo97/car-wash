@@ -1,6 +1,5 @@
 import { initializeApp, cert, getApps } from 'firebase-admin/app'
 import { getStorage, getDownloadURL } from 'firebase-admin/storage'
-import firebaseConfig from '@/firebase-config.json'
 import { Readable } from 'stream';
 
 
