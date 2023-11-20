@@ -2,7 +2,8 @@ import { initializeApp, cert, getApps } from 'firebase-admin/app'
 import { getStorage, getDownloadURL } from 'firebase-admin/storage'
 import { Readable } from 'stream';
 
-
+console.log('process.env', process.env)
+console.log('process.env', process.env.FIREBASE_PRIVATE_KEY)
 const firebaseAdminConfig = {
   credential: cert({
     privateKey: process.env.FIREBASE_PRIVATE_KEY,
