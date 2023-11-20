@@ -4,9 +4,10 @@ import { Readable } from 'stream';
 
 console.log('process.env', process.env)
 console.log('process.env', process.env.FIREBASE_PRIVATE_KEY)
+console.log('process.env', String(process.env.FIREBASE_PRIVATE_KEY))
 const firebaseAdminConfig = {
   credential: cert({
-    privateKey: process.env.FIREBASE_PRIVATE_KEY,
+    privateKey: String(process.env.FIREBASE_PRIVATE_KEY),
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     projectId: process.env.FIREBASE_PROJECT_ID,
   }),
