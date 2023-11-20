@@ -1,5 +1,7 @@
 import { home } from "@/public/home";
 import { StaticImageData } from "next/image";
+import { unstable_noStore as noStore } from 'next/cache';
+
 //============================================================================
 //SERVICE
 export async function fetchServices(): Promise<Service[]> {
@@ -94,5 +96,64 @@ const servicesObject: { [x: string]: Service } = {
 
 //============================================================================
 //ORDER
+export async function fetchOrders(): Promise<Order[]> {
+  noStore()
+  return Object.values(ordersObject)
+}
+
+export async function fetchOrderByUUID(uuid: string): Promise<Order> {
+  noStore()
+  return ordersObject[uuid]
+}
+
+type Order = {
+  uuid: string
+  service_uuid: string
+  schedule_uuid: string
+  delivery: {
+    with: boolean
+    location?: string
+  }
+}
+
+const ordersObject: { [x: string]: Order } = {
+  "1": {
+    uuid: "1",
+    service_uuid: "1",
+    schedule_uuid: "1",
+    delivery: {
+      with: true,
+      location: "Rua 14, numero 768"
+    }
+  },
+  "2": {
+    uuid: "1",
+    service_uuid: "1",
+    schedule_uuid: "1",
+    delivery: {
+      with: true,
+      location: "Rua 14, numero 768"
+    }
+  },
+  "3": {
+    uuid: "1",
+    service_uuid: "1",
+    schedule_uuid: "1",
+    delivery: {
+      with: true,
+      location: "Rua 14, numero 768"
+    }
+  },
+  "4": {
+    uuid: "1",
+    service_uuid: "1",
+    schedule_uuid: "1",
+    delivery: {
+      with: true,
+      location: "Rua 14, numero 768"
+    }
+  },
+}
+
 
 

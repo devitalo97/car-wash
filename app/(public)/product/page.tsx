@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { fetchServices } from "../lib/data";
+import { fetchServices } from "@/app/lib/data";
 
 export default async function Example() {
   const products = await fetchServices();
