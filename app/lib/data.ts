@@ -94,15 +94,15 @@ const servicesObject: { [x: string]: Service } = {
 
 //ORDER ==================================================================================
 //
-export async function fetchOrders(): Promise<OrderQueryResult[]> {
+export async function fetchOrders(query: string, currentPage: number): Promise<OrderQueryResult[]> {
   noStore()
-  await new Promise<void>((resolve) => setTimeout(resolve, 700))
+  await new Promise<void>((resolve) => setTimeout(resolve, 800))
   return [...Object.values(ordersObject), ...Object.values(ordersObject)].map(order => ({
     ...order,
     service_uuid: servicesObject["1"],
     client_uuid: clientsObject["1"],
     schedule_uuid: {} as Schedule
-  }))
+  })).filter(el => el.client_uuid.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()))
 }
 export async function fetchOrderByUUID(uuid: string): Promise<Order> {
   noStore()

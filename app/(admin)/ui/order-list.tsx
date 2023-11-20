@@ -4,8 +4,14 @@ import Link from "next/link";
 import OrderListMenu from "./order-list-menu";
 import { fetchOrders } from "@/app/lib/data";
 
-export default async function OrderList() {
-  const orders = await fetchOrders();
+export default async function OrderList({
+  query,
+  currentPage,
+}: {
+  query: string;
+  currentPage: number;
+}) {
+  const orders = await fetchOrders(query, currentPage);
   if (!orders || orders.length === 0) {
     return <p className="mt-4 text-gray-400">No data available.</p>;
   }

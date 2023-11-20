@@ -4,13 +4,22 @@ import ClientList from "../ui/client-list";
 import { ClientListSkeleton, OrderListSkeleton } from "@/app/ui/skeletons";
 import SearchBar from "../ui/search-bar";
 
-export default function Example() {
+export default function Example({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}) {
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
   return (
     <div className="xl:pl-72 bg-gray-900">
-      <SearchBar />
+      <SearchBar placeholder="Busque pelas ordens de serviço" />
 
-      <Suspense fallback={<OrderListSkeleton />}>
-        <OrderList />
+      <Suspense key={query + currentPage} fallback={<OrderListSkeleton />}>
+        <OrderList query={query} currentPage={currentPage} />
       </Suspense>
       <Suspense fallback={<ClientListSkeleton />}>
         <ClientList />
