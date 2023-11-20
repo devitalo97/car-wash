@@ -1,8 +1,8 @@
 import { Suspense } from "react";
-import OrderList from "../ui/order-list";
-import ClientList from "../ui/client-list";
+import OrderList from "../../ui/order-list";
+import ClientList from "../../ui/client-list";
 import { ClientListSkeleton, OrderListSkeleton } from "@/app/ui/skeletons";
-import SearchBar from "../ui/search-bar";
+import SearchBar from "../../ui/search-bar";
 
 export default function Example({
   searchParams,
@@ -16,7 +16,7 @@ export default function Example({
   const currentPage = Number(searchParams?.page) || 1;
   return (
     <div className="xl:pl-72 bg-gray-900">
-      <SearchBar placeholder="Busque pelas ordens de serviço" />
+      <SearchBar placeholder="Busque pelas ordens" />
 
       <Suspense key={query + currentPage} fallback={<OrderListSkeleton />}>
         <OrderList query={query} currentPage={currentPage} />

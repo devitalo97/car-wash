@@ -4,7 +4,7 @@ import { ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { Fragment } from "react";
 
-export default function OrderListMenu() {
+export default function ListMenu() {
   return (
     <Menu as="div" className="relative">
       <Menu.Button className="flex items-center gap-x-1 text-sm font-medium leading-6 text-white">

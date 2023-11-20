@@ -1,95 +1,136 @@
 import { home } from "@/public/home";
-import { StaticImageData } from "next/image";
 import { unstable_noStore as noStore } from 'next/cache';
+import clientPromise from "./mongodb";
 
 //SERVICE ================================================================================
 //
 export async function fetchServices(): Promise<Service[]> {
-  return Object.values(servicesObject)
+  return await (await clientPromise).db("car-wash").collection("service").aggregate([
+    {
+      $match: {}
+    }]).toArray() as Service[]
 }
-export async function fetchServiceByUUID(uuid: string): Promise<Service> {
-  return servicesObject[uuid]
+export async function fetchFilteredServices(query: string, currentPage: number): Promise<Service[]> {
+  return (await (await clientPromise).db("car-wash").collection("service").aggregate([
+    {
+      $match: {
+        $or: [
+          { name: { $regex: query, $options: 'i' } },
+          { description: { $regex: query, $options: 'i' } }
+        ]
+      }
+    }]).toArray()).map((service) => ({
+      ...service as Service,
+      imageAlt: "alt image"
+    }))
 }
-type Service = {
+export async function createOneService(service: Service): Promise<Service> {
+  await (await clientPromise).db("car-wash").collection("service").insertOne(service)
+  return service
+}
+export async function updateOneService(id: string, service: Partial<Service>): Promise<Partial<Service>> {
+  await (await clientPromise).db("car-wash").collection("service").updateOne({ uuid: id }, { $set: service })
+  return service
+}
+export async function deleteOneService(id: string): Promise<Partial<void>> {
+  await (await clientPromise).db("car-wash").collection("service").deleteOne({ uuid: id })
+}
+export async function fetchServiceById(uuid: string): Promise<Service> {
+  const service = await (await clientPromise).db("car-wash").collection("service").findOne({ uuid })
+  if (!service) {
+    throw new Error("no service")
+  }
+  return service as unknown as Service
+}
+export type Service = {
   uuid: string
   name: string
-  price: string
+  price: number
   description: string
-  imageSrc: StaticImageData
+  created_at: string
+  imageSrc: string
   imageAlt: string
 }
 const servicesObject: { [x: string]: Service } = {
   "1": {
     uuid: "1",
     name: "Lavagem e Higienização Completa",
-    price: "$220",
+    created_at: new Date().toISOString(),
+    price: 220,
     description:
       "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[0],
+    imageSrc: home[0] as unknown as string,
     imageAlt:
       "Model wearing light green backpack with black canvas straps and front zipper pouch.",
   },
   "2": {
     uuid: "2",
     name: "Pintura automotiva",
-    price: "$220",
+    price: 220,
+    created_at: new Date().toISOString(),
     description:
       "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[1],
+    imageSrc: home[1] as unknown as string,
     imageAlt:
       "Model wearing light green backpack with black canvas straps and front zipper pouch.",
   },
   "3": {
     uuid: "3",
     name: "Limpeza de tapetes",
-    price: "$70",
+    price: 70,
+    created_at: new Date().toISOString(),
     description:
       "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[2],
+    imageSrc: home[2] as unknown as string,
     imageAlt:
       "Model wearing light green backpack with black canvas straps and front zipper pouch.",
   },
   "4": {
     uuid: "4",
     name: "Limpeza de estofados",
-    price: "$70",
+    price: 70,
+    created_at: new Date().toISOString(),
     description:
       "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[3],
+    imageSrc: home[3] as unknown as string,
     imageAlt:
       "Model wearing light green backpack with black canvas straps and front zipper pouch.",
   },
   "5": {
     uuid: "5",
     name: "Limpeza de Rodas e Pneus",
-    price: "$70",
+    price: 70,
+    created_at: new Date().toISOString(),
     description:
       "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[4],
+    imageSrc: home[4] as unknown as string,
     imageAlt:
       "Model wearing light green backpack with black canvas straps and front zipper pouch.",
   },
   "6": {
     uuid: "6",
     name: "Limpeza interna",
-    price: "$70",
+    created_at: new Date().toISOString(),
+    price: 70,
     description:
       "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[5],
+    imageSrc: home[5] as unknown as string,
     imageAlt:
       "Model wearing light green backpack with black canvas straps and front zipper pouch.",
   },
   "7": {
     uuid: "7",
     name: "Limpeza Externa",
-    price: "$70",
+    created_at: new Date().toISOString(),
+    price: 70,
     description:
       "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[6],
+    imageSrc: home[6] as unknown as string,
     imageAlt:
       "Model wearing light green backpack with black canvas straps and front zipper pouch.",
   }
 }
+
 
 
 //ORDER ==================================================================================

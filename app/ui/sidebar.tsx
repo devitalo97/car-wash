@@ -1,6 +1,6 @@
 "use client";
 import { Dialog, Transition } from "@headlessui/react";
-import { useState, Fragment } from "react";
+import { useState, Fragment, useMemo } from "react";
 import {
   FolderIcon,
   ServerIcon,
@@ -8,15 +8,33 @@ import {
   ClockIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-const navigation = [
-  { name: "Ordens", href: "#", icon: FolderIcon, current: true },
-  { name: "Serviços", href: "#", icon: ServerIcon, current: false },
-  { name: "Horários", href: "#", icon: ClockIcon, current: false },
+const nav = [
+  {
+    name: "Ordens",
+    href: "/dashboard/order",
+    icon: FolderIcon,
+  },
+  {
+    name: "Serviços",
+    href: "/dashboard/service",
+    icon: ServerIcon,
+  },
+  {
+    name: "Horários",
+    href: "#",
+    icon: ClockIcon,
+  },
 ];
 
 export default function SideBar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
+  const navigation = useMemo(() => {
+    return nav.map((n) => ({ ...n, current: pathname.includes(n.href) }));
+  }, [pathname]);
 
   return (
     <div className="relative xl:z-50 xl:w-72">
@@ -87,10 +105,10 @@ export default function SideBar() {
                         <ul role="list" className="-mx-2 space-y-1">
                           {navigation.map((item) => (
                             <li key={item.name}>
-                              <a
+                              <Link
                                 href={item.href}
                                 className={clsx(
-                                  item.current
+                                  pathname.includes("/dashboard")
                                     ? "bg-gray-800 text-white"
                                     : "text-gray-400 hover:text-white hover:bg-gray-800",
                                   "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
@@ -101,7 +119,7 @@ export default function SideBar() {
                                   aria-hidden="true"
                                 />
                                 {item.name}
-                              </a>
+                              </Link>
                             </li>
                           ))}
                         </ul>
@@ -147,7 +165,7 @@ export default function SideBar() {
                 <ul role="list" className="-mx-2 space-y-1">
                   {navigation.map((item) => (
                     <li key={item.name}>
-                      <a
+                      <Link
                         href={item.href}
                         className={clsx(
                           item.current
@@ -161,7 +179,7 @@ export default function SideBar() {
                           aria-hidden="true"
                         />
                         {item.name}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>

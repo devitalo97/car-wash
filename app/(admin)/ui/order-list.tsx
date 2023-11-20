@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "next/link";
-import OrderListMenu from "./order-list-menu";
+import ListMenu from "../../ui/list-menu";
 import { fetchOrders } from "@/app/lib/data";
 
 export default async function OrderList({
@@ -23,7 +23,7 @@ export default async function OrderList({
         </h1>
 
         {/* Sort dropdown */}
-        <OrderListMenu />
+        <ListMenu />
       </header>
       {/* Deployment list */}
       <ul role="list" className="divide-y divide-white/5">
