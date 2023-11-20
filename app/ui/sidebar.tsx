@@ -1,14 +1,19 @@
 "use client";
-
 import { Dialog, Transition } from "@headlessui/react";
 import { useState, Fragment } from "react";
-import { FolderIcon, ServerIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  FolderIcon,
+  ServerIcon,
+  XMarkIcon,
+  ClockIcon,
+} from "@heroicons/react/24/outline";
 import clsx from "clsx";
 
 const navigation = [
   { name: "Dashboard", href: "#", icon: FolderIcon, current: true },
   { name: "Ordens de serviço", href: "#", icon: FolderIcon, current: false },
   { name: "Clientes", href: "#", icon: ServerIcon, current: false },
+  { name: "Horários", href: "#", icon: ClockIcon, current: false },
 ];
 
 export default function SideBar() {

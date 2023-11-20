@@ -106,7 +106,8 @@ type Order = {
   uuid: string
   service_uuid: string
   schedule_uuid: string
-  user_uuid: string
+  client_uuid: string
+  status: 'pending' | 'paid'
   delivery: {
     with: boolean
     location?: string
@@ -117,7 +118,8 @@ const ordersObject: { [x: string]: Order } = {
     uuid: "1",
     service_uuid: "1",
     schedule_uuid: "1",
-    user_uuid: "1",
+    client_uuid: "1",
+    status: "pending",
     delivery: {
       with: true,
       location: "Rua 14, numero 768"
@@ -127,7 +129,8 @@ const ordersObject: { [x: string]: Order } = {
     uuid: "1",
     service_uuid: "1",
     schedule_uuid: "1",
-    user_uuid: "1",
+    status: "paid",
+    client_uuid: "1",
     delivery: {
       with: true,
       location: "Rua 14, numero 768"
@@ -137,7 +140,8 @@ const ordersObject: { [x: string]: Order } = {
     uuid: "1",
     service_uuid: "1",
     schedule_uuid: "1",
-    user_uuid: "1",
+    status: "paid",
+    client_uuid: "1",
     delivery: {
       with: true,
       location: "Rua 14, numero 768"
@@ -147,7 +151,8 @@ const ordersObject: { [x: string]: Order } = {
     uuid: "1",
     service_uuid: "1",
     schedule_uuid: "1",
-    user_uuid: "1",
+    status: "paid",
+    client_uuid: "1",
     delivery: {
       with: true,
       location: "Rua 14, numero 768"

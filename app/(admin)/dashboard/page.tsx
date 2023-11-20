@@ -1,17 +1,3 @@
-/*
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
 "use client";
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
@@ -23,168 +9,91 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/20/solid";
 import clsx from "clsx";
+import { home } from "@/public/home";
+import Link from "next/link";
 
 const statuses: { [x: string]: string } = {
-  offline: "text-gray-500 bg-gray-100/10",
-  online: "text-green-400 bg-green-400/10",
-  error: "text-rose-400 bg-rose-400/10",
+  pending: "text-gray-500 bg-gray-100/10",
+  paid: "text-green-400 bg-green-400/10",
 };
+
+const statusMapped: { [x: string]: string } = {
+  pending: "Pendente",
+  paid: "Pago",
+};
+
+const devileryMapped: { [x: string]: string } = {
+  true: "M&M Delivery",
+  false: "",
+};
+
 const environments: { [x: string]: string } = {
-  Preview: "text-gray-400 bg-gray-400/10 ring-gray-400/20",
-  Production: "text-indigo-400 bg-indigo-400/10 ring-indigo-400/30",
+  pending: "text-gray-400 bg-gray-400/10 ring-gray-400/20",
+  paid: "text-green-400 bg-green-400/10 ring-green-400/30",
 };
+
 const deployments = [
   {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
+    uuid: "1",
+    service_uuid: {
+      uuid: "1",
+      name: "Lavagem e Higienização Completa",
+      price: "$220",
+      description:
+        "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
+      imageSrc: home[0],
+      imageAlt:
+        "Model wearing light green backpack with black canvas straps and front zipper pouch.",
+    },
+    schedule_uuid: {
+      uuid: "1",
+      from: new Date(),
+      to: new Date(),
+      order_uuid: "1",
+    },
+    client_uuid: {
+      uuid: "1",
+      name: "Client#00",
+      email: "client@mail.com",
+      avatar: "string",
+      orders_uuid: ["1"],
+    },
+    status: "paid",
+    delivery: {
+      with: true,
+      location: "Rua 14, numero 768",
+    },
   },
   {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
+    uuid: "2",
+    service_uuid: {
+      uuid: "2",
+      name: "Pintura automotiva",
+      price: "$220",
+      description:
+        "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
+      imageSrc: home[1],
+      imageAlt:
+        "Model wearing light green backpack with black canvas straps and front zipper pouch.",
+    },
+    schedule_uuid: {
+      uuid: "2",
+      from: new Date(),
+      to: new Date(),
+      order_uuid: "2",
+    },
+    client_uuid: {
+      uuid: "2",
+      name: "Client#01",
+      email: "client@mail.com",
+      avatar: "string",
+      orders_uuid: ["1"],
+    },
+    status: "pending",
+    delivery: {
+      with: false,
+    },
   },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  {
-    id: 1,
-    href: "#",
-    projectName: "ios-app",
-    teamName: "Planetaria",
-    status: "offline",
-    statusText: "Initiated 1m 32s ago",
-    description: "Deploys from GitHub",
-    environment: "Preview",
-  },
-  // More deployments...
 ];
 const activityItems = [
   {
@@ -213,8 +122,8 @@ export default function Example() {
         <body class="h-full">
         ```
       */}
-      <div>
-        <div className="xl:pl-72 bg-gray-900">
+      <div className="h-full">
+        <div className="h-full xl:pl-72 bg-gray-900">
           {/* Sticky search header */}
           <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-6 border-b border-white/5 bg-gray-900 px-4 shadow-sm sm:px-6 lg:px-8">
             <button
@@ -321,7 +230,7 @@ export default function Example() {
             <ul role="list" className="divide-y divide-white/5">
               {deployments.map((deployment) => (
                 <li
-                  key={deployment.id}
+                  key={deployment.uuid}
                   className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8"
                 >
                   <div className="min-w-0 flex-auto">
@@ -335,38 +244,45 @@ export default function Example() {
                         <div className="h-2 w-2 rounded-full bg-current" />
                       </div>
                       <h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
-                        <a href={deployment.href} className="flex gap-x-2">
+                        <Link
+                          href={`/order/${deployment.uuid}`}
+                          className="flex gap-x-2"
+                        >
                           <span className="truncate">
-                            {deployment.teamName}
+                            {deployment.service_uuid.name}
                           </span>
                           <span className="text-gray-400">/</span>
                           <span className="whitespace-nowrap">
-                            {deployment.projectName}
+                            {deployment.client_uuid.name}
                           </span>
                           <span className="absolute inset-0" />
-                        </a>
+                        </Link>
                       </h2>
                     </div>
-                    <div className="mt-3 flex items-center gap-x-2.5 text-xs leading-5 text-gray-400">
-                      <p className="truncate">{deployment.description}</p>
-                      <svg
-                        viewBox="0 0 2 2"
-                        className="h-0.5 w-0.5 flex-none fill-gray-300"
-                      >
-                        <circle cx={1} cy={1} r={1} />
-                      </svg>
-                      <p className="whitespace-nowrap">
-                        {deployment.statusText}
-                      </p>
-                    </div>
+                    {deployment.delivery.with ? (
+                      <div className="mt-3 flex items-center gap-x-2.5 text-xs leading-5 text-gray-400">
+                        <p className="truncate">
+                          {deployment.delivery.location}
+                        </p>
+                        <svg
+                          viewBox="0 0 2 2"
+                          className="h-0.5 w-0.5 flex-none fill-gray-300"
+                        >
+                          <circle cx={1} cy={1} r={1} />
+                        </svg>
+                        <p className="whitespace-nowrap">
+                          {devileryMapped[String(deployment.delivery.with)]}
+                        </p>
+                      </div>
+                    ) : null}
                   </div>
                   <div
                     className={clsx(
-                      environments[deployment.environment],
+                      environments[deployment.status],
                       "rounded-full flex-none py-1 px-2 text-xs font-medium ring-1 ring-inset"
                     )}
                   >
-                    {deployment.environment}
+                    {statusMapped[deployment.status]}
                   </div>
                   <ChevronRightIcon
                     className="h-5 w-5 flex-none text-gray-400"
