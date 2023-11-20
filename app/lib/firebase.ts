@@ -8,7 +8,7 @@ const firebaseAdminConfig = {
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
     projectId: process.env.FIREBASE_PROJECT_ID,
   }),
-  storageBucket: 'car-wash-acdb0.appspot.com'
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET
 };
 
 const app = getApps().length <= 0 ? initializeApp(firebaseAdminConfig) : getApps()[0];
