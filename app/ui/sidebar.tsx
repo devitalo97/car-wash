@@ -10,9 +10,8 @@ import {
 import clsx from "clsx";
 
 const navigation = [
-  { name: "Dashboard", href: "#", icon: FolderIcon, current: true },
-  { name: "Ordens de serviço", href: "#", icon: FolderIcon, current: false },
-  { name: "Clientes", href: "#", icon: ServerIcon, current: false },
+  { name: "Ordens", href: "#", icon: FolderIcon, current: true },
+  { name: "Serviços", href: "#", icon: ServerIcon, current: false },
   { name: "Horários", href: "#", icon: ClockIcon, current: false },
 ];
 
