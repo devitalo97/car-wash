@@ -1,4 +1,4 @@
-import { fetchServiceByUUID } from "@/app/lib/data";
+import { fetchServiceById } from "@/app/lib/data";
 import {
   CheckIcon,
   QuestionMarkCircleIcon,
@@ -12,7 +12,7 @@ import Link from "next/link";
 const reviews = { average: 4, totalCount: 1624 };
 
 export default async function Example({ params }: { params: { id: string } }) {
-  const product = await fetchServiceByUUID(params.id);
+  const product = await fetchServiceById(params.id);
   const breadcrumbs = [
     { id: 1, name: "Serviços", href: "/product" },
     { id: 2, name: product.name, href: `/product/${params.id}` },

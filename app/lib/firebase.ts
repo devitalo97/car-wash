@@ -6,9 +6,9 @@ import { Readable } from 'stream';
 
 const firebaseAdminConfig = {
   credential: cert({
-    privateKey: firebaseConfig.private_key,
-    clientEmail: firebaseConfig.client_email,
-    projectId: firebaseConfig.project_id,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY,
+    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+    projectId: process.env.FIREBASE_PROJECT_ID,
   }),
   storageBucket: 'car-wash-acdb0.appspot.com'
 };
