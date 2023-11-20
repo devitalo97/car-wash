@@ -2,16 +2,14 @@ import { home } from "@/public/home";
 import { StaticImageData } from "next/image";
 import { unstable_noStore as noStore } from 'next/cache';
 
-//============================================================================
-//SERVICE
+//SERVICE ================================================================================
+//
 export async function fetchServices(): Promise<Service[]> {
   return Object.values(servicesObject)
 }
-
 export async function fetchServiceByUUID(uuid: string): Promise<Service> {
   return servicesObject[uuid]
 }
-
 type Service = {
   uuid: string
   name: string
@@ -20,7 +18,6 @@ type Service = {
   imageSrc: StaticImageData
   imageAlt: string
 }
-
 const servicesObject: { [x: string]: Service } = {
   "1": {
     uuid: "1",
@@ -94,33 +91,33 @@ const servicesObject: { [x: string]: Service } = {
   }
 }
 
-//============================================================================
-//ORDER
+
+//ORDER ==================================================================================
+//
 export async function fetchOrders(): Promise<Order[]> {
   noStore()
   return Object.values(ordersObject)
 }
-
 export async function fetchOrderByUUID(uuid: string): Promise<Order> {
   noStore()
   return ordersObject[uuid]
 }
-
 type Order = {
   uuid: string
   service_uuid: string
   schedule_uuid: string
+  user_uuid: string
   delivery: {
     with: boolean
     location?: string
   }
 }
-
 const ordersObject: { [x: string]: Order } = {
   "1": {
     uuid: "1",
     service_uuid: "1",
     schedule_uuid: "1",
+    user_uuid: "1",
     delivery: {
       with: true,
       location: "Rua 14, numero 768"
@@ -130,6 +127,7 @@ const ordersObject: { [x: string]: Order } = {
     uuid: "1",
     service_uuid: "1",
     schedule_uuid: "1",
+    user_uuid: "1",
     delivery: {
       with: true,
       location: "Rua 14, numero 768"
@@ -139,6 +137,7 @@ const ordersObject: { [x: string]: Order } = {
     uuid: "1",
     service_uuid: "1",
     schedule_uuid: "1",
+    user_uuid: "1",
     delivery: {
       with: true,
       location: "Rua 14, numero 768"
@@ -148,11 +147,43 @@ const ordersObject: { [x: string]: Order } = {
     uuid: "1",
     service_uuid: "1",
     schedule_uuid: "1",
+    user_uuid: "1",
     delivery: {
       with: true,
       location: "Rua 14, numero 768"
     }
   },
+}
+
+
+//SCHEDULE ===============================================================================
+//
+type Schedule = {
+  uuid: string
+  from: Date
+  to: Date
+  order_uuid?: string
+}
+
+
+//CLIENT =================================================================================
+//
+type Client = {
+  uuid: string
+  name: string
+  email: string
+  avatar: string
+  orders_uuid: string[]
+}
+
+
+//USER ===================================================================================
+//
+type User = {
+  uuid: string
+  name: string
+  email: string
+  avatar: string
 }
 
 
