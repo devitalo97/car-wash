@@ -20,7 +20,7 @@ export default function SideBar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div>
+    <div className="relative xl:z-50 xl:w-72">
       <Transition.Root show={sidebarOpen} as={Fragment}>
         <Dialog
           as="div"
@@ -132,7 +132,7 @@ export default function SideBar() {
       </Transition.Root>
 
       {/* Static sidebar for desktop */}
-      <div className="hidden xl:fixed xl:inset-y-0 xl:z-50 xl:flex xl:w-72 xl:flex-col">
+      <div className="hidden xl:fixed xl:inset-y-0 xl:w-72 xl:flex xl:flex-col w-full bg-gray-900">
         {/* Sidebar component, swap this element with another sidebar if you like */}
         <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-black/10 px-6 ring-1 ring-white/5">
           <div className="flex h-16 shrink-0 items-center">

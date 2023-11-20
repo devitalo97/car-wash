@@ -94,9 +94,15 @@ const servicesObject: { [x: string]: Service } = {
 
 //ORDER ==================================================================================
 //
-export async function fetchOrders(): Promise<Order[]> {
+export async function fetchOrders(): Promise<OrderQueryResult[]> {
   noStore()
-  return Object.values(ordersObject)
+  await new Promise<void>((resolve) => setTimeout(resolve, 700))
+  return [...Object.values(ordersObject), ...Object.values(ordersObject)].map(order => ({
+    ...order,
+    service_uuid: servicesObject["1"],
+    client_uuid: clientsObject["1"],
+    schedule_uuid: {} as Schedule
+  }))
 }
 export async function fetchOrderByUUID(uuid: string): Promise<Order> {
   noStore()
@@ -144,19 +150,64 @@ const ordersObject: { [x: string]: Order } = {
     client_uuid: "1",
     delivery: {
       with: true,
-      location: "Rua 14, numero 768"
+      location: "Rua 17, numero 55"
     }
   },
   "4": {
     uuid: "1",
     service_uuid: "1",
     schedule_uuid: "1",
-    status: "paid",
+    status: "pending",
     client_uuid: "1",
     delivery: {
       with: true,
-      location: "Rua 14, numero 768"
+      location: "Rua 35, numero 99"
     }
+  },
+}
+
+
+//CLIENT =================================================================================
+//
+export async function fetchClients(): Promise<Client[]> {
+  noStore()
+  await new Promise<void>((resolve) => setTimeout(resolve, 500))
+  return Object.values(clientsObject)
+}
+export async function fetchClientByUUID(uuid: string): Promise<Client> {
+  noStore()
+  return clientsObject[uuid]
+}
+export type Client = {
+  uuid: string
+  name: string
+  email: string
+  avatar: string
+  created_at: string
+  orders_uuid?: string[]
+}
+const clientsObject: { [x: string]: Client } = {
+  "1": {
+    uuid: "1",
+    name: "Client#00",
+    email: 'client00@mail.com',
+    created_at: new Date().toISOString(),
+    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    orders_uuid: ["1"],
+  },
+  "2": {
+    uuid: "2",
+    name: "Client#01",
+    email: 'client01@mail.com',
+    created_at: new Date().toISOString(),
+    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+  },
+  "3": {
+    uuid: "3",
+    name: "Client#02",
+    email: 'client02@mail.com',
+    created_at: new Date().toISOString(),
+    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
   },
 }
 
@@ -171,17 +222,6 @@ type Schedule = {
 }
 
 
-//CLIENT =================================================================================
-//
-type Client = {
-  uuid: string
-  name: string
-  email: string
-  avatar: string
-  orders_uuid: string[]
-}
-
-
 //USER ===================================================================================
 //
 type User = {
@@ -191,5 +231,20 @@ type User = {
   avatar: string
 }
 
+
+
+
+
+export type OrderQueryResult = {
+  uuid: string
+  service_uuid: Service
+  schedule_uuid: Schedule
+  client_uuid: Client
+  status: 'pending' | 'paid'
+  delivery: {
+    with: boolean
+    location?: string
+  }
+}
 
 
