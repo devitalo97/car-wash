@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { OrderListSkeleton } from "@/app/ui/skeletons";
 import SearchBar from "../../ui/search-bar";
 import ServiceList from "../../ui/service-list";
-import ServiceCreateForm from "@/app/ui/service-create-form";
+import ServiceCreateForm from "@/app/ui/form/service/create-form";
 import { createService } from "@/app/lib/actions";
 
 export default function Example({
