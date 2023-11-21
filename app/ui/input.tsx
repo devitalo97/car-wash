@@ -1,5 +1,6 @@
 import { ExclamationCircleIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -7,11 +8,12 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export default function Input({ label, error, ...rest }: Props) {
+  const id = rest?.id ?? uuidv4();
   return (
     <div>
       {label ? (
         <label
-          htmlFor="email"
+          htmlFor={id}
           className="block text-sm font-medium leading-6 text-white"
         >
           {label}
@@ -20,6 +22,7 @@ export default function Input({ label, error, ...rest }: Props) {
       <div className="relative mt-2 rounded-md shadow-sm">
         <input
           {...rest}
+          id={id}
           className={clsx(
             "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
             error &&
