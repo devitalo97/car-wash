@@ -28,7 +28,7 @@ export function useServiceUpdateForm({
     defaultValues: {
       name: service.name,
       description: service.description,
-      price: service.price,
+      price: service.price / 100,
     }
   });
 
