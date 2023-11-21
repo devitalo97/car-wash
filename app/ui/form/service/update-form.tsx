@@ -1,10 +1,11 @@
 "use client";
 
-import Input from "./input";
-import Textarea from "./textarea";
-import Button from "./button";
+import Input from "../../input";
+import Textarea from "../../textarea";
+import Button from "../../button";
 import { PhotoIcon } from "@heroicons/react/24/outline";
-import { Service } from "../lib/data";
+import { Service } from "../../../lib/data";
+import { useServiceUpdateForm } from "./useServiceUpdateForm";
 
 interface Props {
   updateService: (formData: FormData) => Promise<void>;
@@ -12,6 +13,10 @@ interface Props {
 }
 
 export default function ServiceUpdateForm({ updateService, service }: Props) {
+  const { errors, register, handleSubmit } = useServiceUpdateForm({
+    updateService,
+    service,
+  });
   return (
     <aside className="bg-gray-900 border-l border-white/5">
       <header className="flex items-center justify-between border-b border-white/5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
@@ -20,28 +25,28 @@ export default function ServiceUpdateForm({ updateService, service }: Props) {
         </h2>
       </header>
 
-      <form className="px-4 py-2 space-y-2" action={updateService}>
+      <form className="px-4 py-2 space-y-2" onSubmit={handleSubmit}>
         <div className="space-y-2">
           <div className="border-b border-gray-900/10">
             <div className="flex flex-col gap-4">
               <Input
-                name="name"
+                {...register("name")}
                 placeholder="Nome do serviço"
                 label="Nome"
-                defaultValue={service.name}
+                error={errors.name?.message}
               />
               <Input
-                name="price"
+                {...register("price")}
                 placeholder="Preço do serviço"
                 label="Preço"
                 type="number"
-                defaultValue={service.price / 100}
+                error={errors.price?.message}
               />
               <Textarea
-                name="description"
+                {...register("description")}
                 label="Descrição"
                 placeholder="Descrição do serviço"
-                defaultValue={service.description}
+                error={errors.description?.message}
               />
             </div>
           </div>

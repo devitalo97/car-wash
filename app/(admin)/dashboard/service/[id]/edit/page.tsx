@@ -1,5 +1,5 @@
 import { fetchServiceById } from "@/app/lib/data";
-import ServiceUpdateForm from "@/app/ui/service-update-form";
+import ServiceUpdateForm from "@/app/ui/form/service/update-form";
 import { updateService } from "@/app/lib/actions";
 import { notFound } from "next/navigation";
 
