@@ -6,16 +6,19 @@ import {
 } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
-import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 const reviews = { average: 4, totalCount: 1624 };
 
 export default async function Example({ params }: { params: { id: string } }) {
-  const product = await fetchServiceById(params.id);
+  const service = await fetchServiceById(params.id);
+  if (!service) {
+    notFound();
+  }
   const breadcrumbs = [
-    { id: 1, name: "Serviços", href: "/product" },
-    { id: 2, name: product.name, href: `/product/${params.id}` },
+    { id: 1, name: "Serviços", href: "/service" },
+    { id: 2, name: service.name, href: `/service/${params.id}` },
   ];
   return (
     <div className="bg-white">
@@ -51,7 +54,7 @@ export default async function Example({ params }: { params: { id: string } }) {
 
           <div className="mt-4">
             <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-              {product.name}
+              {service.name}
             </h1>
           </div>
 
@@ -62,7 +65,7 @@ export default async function Example({ params }: { params: { id: string } }) {
 
             <div className="flex items-center">
               <p className="text-lg text-gray-900 sm:text-xl">
-                {product.price}
+                {service.price}
               </p>
 
               <div className="ml-4 border-l border-gray-300 pl-4">
@@ -93,7 +96,7 @@ export default async function Example({ params }: { params: { id: string } }) {
             </div>
 
             <div className="mt-4 space-y-6">
-              <p className="text-base text-gray-500">{product.description}</p>
+              <p className="text-base text-gray-500">{service.description}</p>
             </div>
 
             <div className="mt-6 flex items-center">
@@ -111,9 +114,9 @@ export default async function Example({ params }: { params: { id: string } }) {
         {/* Product image */}
         <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
           <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg">
-            <Image
-              src={product.imageSrc}
-              alt={product.imageAlt}
+            <img
+              src={service.imageSrc}
+              alt={service.imageAlt}
               className="h-full w-full object-cover object-center"
             />
           </div>

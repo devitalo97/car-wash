@@ -29,7 +29,7 @@ export default async function ServiceList({
         {services.map((service) => (
           <li
             key={service.uuid}
-            className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8"
+            className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 hover:bg-white/20"
           >
             <div className="min-w-0 flex-auto">
               <div className="flex items-center gap-x-3">

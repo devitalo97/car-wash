@@ -27,15 +27,19 @@ export async function createService(formData: FormData) {
   const priceInCents = price * 100;
   const created_at = new Date().toISOString()
   const uuid = uuidv4()
-  await createOneService({
-    name,
-    price: priceInCents,
-    description,
-    uuid,
-    created_at,
-    imageSrc,
-    imageAlt: file.name
-  })
+  try {
+    await createOneService({
+      name,
+      price: priceInCents,
+      description,
+      uuid,
+      created_at,
+      imageSrc,
+      imageAlt: file.name
+    })
+  } catch (e) {
+    throw new Error((e as Error).message);
+  }
   revalidatePath('/dashboard/services')
 }
 
@@ -44,22 +48,35 @@ export async function updateService(id: string, formData: FormData) {
   const file = file_upload as File
   const bytes = await file.arrayBuffer()
   const buffer = Buffer.from(bytes);
-  const imageSrc: any = await uploadFile({ buffer, name: file.name })
+  let imageSrc
+  try {
+    imageSrc = await uploadFile({ buffer, name: file.name })
+  } catch (e) {
+    throw new Error((e as Error).message);
+  }
   const { name, price, description } = CreateService.parse(rest);
   const priceInCents = price * 100;
-  await updateOneService(id, {
-    name,
-    price: priceInCents,
-    description,
-    imageSrc,
-    imageAlt: file.name
-  })
+  try {
+    await updateOneService(id, {
+      name,
+      price: priceInCents,
+      description,
+      imageSrc,
+      imageAlt: file.name
+    })
+  } catch (e) {
+    throw new Error((e as Error).message);
+  }
   revalidatePath(`/dashboard/service/${id}/edit`)
   redirect(`/dashboard/service/${id}`)
 }
 
 export async function deleteService(id: string) {
-  await deleteOneService(id)
+  try {
+    await deleteOneService(id)
+  } catch (e) {
+    throw new Error((e as Error).message);
+  }
   revalidatePath(`/dashboard/service`)
   redirect(`/dashboard/service`)
 }

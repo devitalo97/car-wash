@@ -16,7 +16,7 @@ export default function Example({
   const query = searchParams?.query || "";
   const currentPage = Number(searchParams?.page) || 1;
   return (
-    <div className="xl:pl-72 bg-gray-900">
+    <div className="xl:pl-72 bg-gray-900 h-full">
       <SearchBar placeholder="Busque pelos serviços" />
 
       <Suspense key={query + currentPage} fallback={<OrderListSkeleton />}>

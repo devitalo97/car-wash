@@ -1,6 +1,7 @@
 import { fetchServiceById } from "@/app/lib/data";
 import Link from "next/link";
 import { deleteService } from "@/app/lib/actions";
+import { notFound } from "next/navigation";
 
 export default async function Example({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -13,6 +14,9 @@ export default async function Example({ params }: { params: { id: string } }) {
     },
   ];
   const service = await fetchServiceById(id);
+  if (!service) {
+    notFound();
+  }
   const deleteServiceWithId = deleteService.bind(null, service.uuid);
 
   return (

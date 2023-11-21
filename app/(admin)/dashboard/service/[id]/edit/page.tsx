@@ -1,10 +1,14 @@
 import { fetchServiceById } from "@/app/lib/data";
 import ServiceUpdateForm from "@/app/ui/service-update-form";
 import { updateService } from "@/app/lib/actions";
+import { notFound } from "next/navigation";
 
 export default async function Example({ params }: { params: { id: string } }) {
   const id = params.id;
   const service = await fetchServiceById(id);
+  if (!service) {
+    notFound();
+  }
   const updateInvoiceWithId = updateService.bind(null, service.uuid);
   const breadcrumbs = [
     { id: 1, name: "Serviços", href: "/dashboard/service" },

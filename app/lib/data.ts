@@ -37,11 +37,9 @@ export async function deleteOneService(id: string): Promise<Partial<void>> {
 }
 export async function fetchServiceById(uuid: string): Promise<Service> {
   const service = await (await clientPromise).db("car-wash").collection("service").findOne({ uuid })
-  if (!service) {
-    throw new Error("no service")
-  }
   return service as unknown as Service
 }
+
 export type Service = {
   uuid: string
   name: string
@@ -257,11 +255,16 @@ const clientsObject: { [x: string]: Client } = {
 //
 type Schedule = {
   uuid: string
-  from: Date
-  to: Date
+  from: string
+  to: string
   order_uuid?: string
 }
-
+export async function fetchSchedules(): Promise<Schedule[]> {
+  return await (await clientPromise).db("car-wash").collection("schedule").aggregate([
+    {
+      $match: {}
+    }]).toArray() as Schedule[]
+}
 
 //USER ===================================================================================
 //

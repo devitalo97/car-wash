@@ -24,7 +24,7 @@ const nav = [
   },
   {
     name: "Horários",
-    href: "#",
+    href: "/dashboard/schedule",
     icon: ClockIcon,
   },
 ];
