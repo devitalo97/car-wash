@@ -1,11 +1,26 @@
+"use client";
+
 import Button from "@/app/ui/button";
 import Input from "@/app/ui/input";
+import { useAdminLoginForm } from "./useAdminLoginForm";
 
-export function AdminLoginForm() {
+interface Props {
+  signIn: (formData: FormData) => Promise<void>;
+}
+
+export function AdminLoginForm({ signIn }: Props) {
+  const { errors, register, handleSubmit } = useAdminLoginForm({
+    signIn,
+  });
   return (
     <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form className="space-y-6" action="#" method="POST">
-        <Input type="email" label="Email" />
+      <form className="space-y-6" onSubmit={handleSubmit}>
+        <Input
+          type="email"
+          label="Email"
+          {...register("email")}
+          error={errors.email?.message}
+        />
 
         <div>
           <div className="flex items-center justify-between">
@@ -24,7 +39,12 @@ export function AdminLoginForm() {
               </a>
             </div>
           </div>
-          <Input type="password" id="password" />
+          <Input
+            type="password"
+            id="password"
+            {...register("password")}
+            error={errors.password?.message}
+          />
         </div>
 
         <div>

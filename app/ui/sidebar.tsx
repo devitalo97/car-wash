@@ -6,6 +6,7 @@ import {
   ServerIcon,
   XMarkIcon,
   ClockIcon,
+  ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "next/link";
@@ -29,7 +30,7 @@ const nav = [
   },
 ];
 
-export default function SideBar() {
+export default function SideBar({ logout }: { logout: () => Promise<void> }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const navigation = useMemo(() => {
@@ -128,7 +129,7 @@ export default function SideBar() {
                       <li className="-mx-6 mt-auto">
                         <a
                           href="#"
-                          className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-white hover:bg-gray-800"
+                          className="relative flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-white hover:bg-gray-800"
                         >
                           <img
                             className="h-8 w-8 rounded-full bg-gray-800"
@@ -137,6 +138,7 @@ export default function SideBar() {
                           />
                           <span className="sr-only">Your profile</span>
                           <span aria-hidden="true">Tom Cook</span>
+                          <SignOutButton logout={logout} />
                         </a>
                       </li>
                     </ul>
@@ -188,7 +190,7 @@ export default function SideBar() {
               <li className="-mx-6 mt-auto">
                 <a
                   href="#"
-                  className="flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-white hover:bg-gray-800"
+                  className="relative flex items-center gap-x-4 px-6 py-3 text-sm font-semibold leading-6 text-white hover:bg-gray-800"
                 >
                   <img
                     className="h-8 w-8 rounded-full bg-gray-800"
@@ -197,6 +199,7 @@ export default function SideBar() {
                   />
                   <span className="sr-only">Your profile</span>
                   <span aria-hidden="true">Tom Cook</span>
+                  <SignOutButton logout={logout} />
                 </a>
               </li>
             </ul>
@@ -206,3 +209,13 @@ export default function SideBar() {
     </div>
   );
 }
+
+const SignOutButton = ({ logout }: { logout: () => Promise<void> }) => {
+  return (
+    <form action={logout} className="absolute right-4">
+      <button type="submit">
+        <ArrowLeftOnRectangleIcon className="h-5 w-5" aria-hidden="true" />
+      </button>
+    </form>
+  );
+};

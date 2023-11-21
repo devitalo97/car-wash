@@ -1,6 +1,7 @@
 import { home } from "@/public/home";
 import { unstable_noStore as noStore } from 'next/cache';
 import clientPromise from "./mongodb";
+import { Client, Order, Service, User } from "./definitions";
 
 //SERVICE ================================================================================
 //
@@ -40,15 +41,7 @@ export async function fetchServiceById(uuid: string): Promise<Service> {
   return service as unknown as Service
 }
 
-export type Service = {
-  uuid: string
-  name: string
-  price: number
-  description: string
-  created_at: string
-  imageSrc: string
-  imageAlt: string
-}
+
 const servicesObject: { [x: string]: Service } = {
   "1": {
     uuid: "1",
@@ -147,17 +140,7 @@ export async function fetchOrderByUUID(uuid: string): Promise<Order> {
   noStore()
   return ordersObject[uuid]
 }
-type Order = {
-  uuid: string
-  service_uuid: string
-  schedule_uuid: string
-  client_uuid: string
-  status: 'pending' | 'paid'
-  delivery: {
-    with: boolean
-    location?: string
-  }
-}
+
 const ordersObject: { [x: string]: Order } = {
   "1": {
     uuid: "1",
@@ -217,14 +200,7 @@ export async function fetchClientByUUID(uuid: string): Promise<Client> {
   noStore()
   return clientsObject[uuid]
 }
-export type Client = {
-  uuid: string
-  name: string
-  email: string
-  avatar: string
-  created_at: string
-  orders_uuid?: string[]
-}
+
 const clientsObject: { [x: string]: Client } = {
   "1": {
     uuid: "1",
@@ -268,13 +244,14 @@ export async function fetchSchedules(): Promise<Schedule[]> {
 
 //USER ===================================================================================
 //
-type User = {
-  uuid: string
-  name: string
-  email: string
-  avatar: string
+export async function fetchUserByEmail(email: string): Promise<User | undefined> {
+  try {
+    const user = await (await clientPromise).db("car-wash").collection("user").findOne({ email })
+    return user as unknown as User;
+  } catch (error) {
+    throw new Error('Failed to fetch user.');
+  }
 }
-
 
 
 

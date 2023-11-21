@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache';
 import { uploadFile } from './firebase';
 import { redirect } from 'next/navigation';
+import { signIn, signOut } from '@/auth';
 
 const CreateServiceFormSchema = z.object({
   uuid: z.string(),
@@ -37,8 +38,8 @@ export async function createService(formData: FormData) {
       imageSrc,
       imageAlt: file.name
     })
-  } catch (e) {
-    throw new Error((e as Error).message);
+  } catch (error) {
+    throw error
   }
   revalidatePath('/dashboard/services')
 }
@@ -64,8 +65,8 @@ export async function updateService(id: string, formData: FormData) {
       imageSrc,
       imageAlt: file.name
     })
-  } catch (e) {
-    throw new Error((e as Error).message);
+  } catch (error) {
+    throw error
   }
   revalidatePath(`/dashboard/service/${id}/edit`)
   redirect(`/dashboard/service/${id}`)
@@ -74,9 +75,25 @@ export async function updateService(id: string, formData: FormData) {
 export async function deleteService(id: string) {
   try {
     await deleteOneService(id)
-  } catch (e) {
-    throw new Error((e as Error).message);
+  } catch (error) {
+    throw error;
   }
   revalidatePath(`/dashboard/service`)
   redirect(`/dashboard/service`)
+}
+
+export async function authenticate(formData: FormData) {
+  try {
+    await signIn('credentials', Object.fromEntries(formData));
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function logout() {
+  try {
+    await signOut();
+  } catch (error) {
+    throw error;
+  }
 }

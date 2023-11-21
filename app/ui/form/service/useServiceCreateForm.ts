@@ -24,7 +24,7 @@ export function useServiceCreateForm({
     resolver: zodResolver(schema)
   });
 
-  const handleSubmit = submit(async (data, e) => {
+  const handleSubmit = submit(async (_, e) => {
     await createService(new FormData(e?.target))
   });
   return {

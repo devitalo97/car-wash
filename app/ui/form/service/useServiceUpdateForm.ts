@@ -1,4 +1,4 @@
-import { Service } from '@/app/lib/data';
+import { Service } from '@/app/lib/definitions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -32,7 +32,7 @@ export function useServiceUpdateForm({
     }
   });
 
-  const handleSubmit = submit(async (data, e) => {
+  const handleSubmit = submit(async (_, e) => {
     await updateService(new FormData(e?.target))
   });
   return {

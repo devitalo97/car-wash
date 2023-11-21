@@ -1,4 +1,5 @@
-import { AdminLoginForm } from "../ui/admin-login-form";
+import { authenticate } from "@/app/lib/actions";
+import { AdminLoginForm } from "@/app/ui/form/login/admin-login-form";
 
 export default function Example() {
   return (
@@ -23,7 +24,7 @@ export default function Example() {
           </h2>
         </div>
 
-        <AdminLoginForm />
+        <AdminLoginForm signIn={authenticate} />
       </div>
     </>
   );
