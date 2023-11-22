@@ -37,3 +37,12 @@ export type User = {
   email: string
   avatar: string
 }
+
+export type Schedule = {
+  uuid: string
+  from: Date
+  to: Date
+  created_at: string
+  order_uuid?: string
+}
+

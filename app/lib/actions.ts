@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { createOneSchedule, createOneService, deleteOneService, updateOneService } from './data';
+import { createOneSchedule, createOneService, deleteOneSchedule, deleteOneService, updateOneSchedule, updateOneService } from './data';
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache';
 import { uploadFile } from './firebase';
@@ -106,6 +106,30 @@ export async function createSchedule(formData: FormData) {
   }
   revalidatePath('/admin/dashboard/schedule')
   redirect('/admin/dashboard/schedule')
+}
+
+export async function deleteSchedule(id: string) {
+  try {
+    await deleteOneSchedule(id)
+  } catch (error) {
+    throw error;
+  }
+  revalidatePath(`/admin/dashboard/schedule`)
+  redirect(`/admin/dashboard/schedule`)
+}
+
+export async function updateSchedule(id: string, formData: FormData) {
+  const { from, to } = CreateSchedule.parse(Object.fromEntries(formData.entries()));
+  try {
+    await updateOneSchedule(id, {
+      from: new Date(from),
+      to: new Date(to)
+    })
+  } catch (error) {
+    throw error
+  }
+  revalidatePath(`/admin/dashboard/schedule/${id}/edit`)
+  redirect(`/admin/dashboard/schedule/${id}`)
 }
 
 export async function authenticate(formData: FormData) {

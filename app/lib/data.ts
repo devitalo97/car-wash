@@ -1,7 +1,7 @@
 import { home } from "@/public/home";
 import { unstable_noStore as noStore } from 'next/cache';
 import clientPromise from "./mongodb";
-import { Client, Order, Service, User } from "./definitions";
+import { Client, Order, Schedule, Service, User } from "./definitions";
 
 //SERVICE ================================================================================
 //
@@ -229,13 +229,7 @@ const clientsObject: { [x: string]: Client } = {
 
 //SCHEDULE ===============================================================================
 //
-type Schedule = {
-  uuid: string
-  from: Date
-  to: Date
-  created_at: string
-  order_uuid?: string
-}
+
 export async function fetchSchedules(): Promise<Schedule[]> {
   return await (await clientPromise).db("car-wash").collection("schedule").aggregate([
     {
@@ -246,6 +240,18 @@ export async function createOneSchedule(schedule: Schedule): Promise<Schedule> {
   await (await clientPromise).db("car-wash").collection("schedule").insertOne(schedule)
   return schedule
 }
+export async function deleteOneSchedule(id: string): Promise<Partial<void>> {
+  await (await clientPromise).db("car-wash").collection("schedule").deleteOne({ uuid: id })
+}
+export async function fetchScheduleById(uuid: string): Promise<Schedule> {
+  const schedule = await (await clientPromise).db("car-wash").collection("schedule").findOne({ uuid })
+  return schedule as unknown as Schedule
+}
+export async function updateOneSchedule(id: string, schedule: Partial<Schedule>): Promise<Partial<Schedule>> {
+  await (await clientPromise).db("car-wash").collection("schedule").updateOne({ uuid: id }, { $set: schedule })
+  return schedule
+}
+
 
 //USER ===================================================================================
 //
