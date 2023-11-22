@@ -6,8 +6,6 @@ export default async function ScheduleList() {
   if (!schedules || schedules.length === 0) {
     return <p className="mt-4 text-gray-400">No data available.</p>;
   }
-
-  console.log("schedules", schedules);
   return (
     <ol className="lg:absolute lg:inset-0 lg:overflow-y-auto lg:grid-cols-1">
       {schedules.map((meeting) => (
