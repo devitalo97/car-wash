@@ -31,7 +31,7 @@ export default async function Example() {
                     className="group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white"
                   >
                     <div className="aspect-h-4 aspect-w-3 bg-gray-200 sm:aspect-none group-hover:opacity-75 sm:h-96">
-                      <Image
+                      <img
                         src={product.imageSrc}
                         alt={product.imageAlt}
                         className="h-full w-full object-cover object-center sm:h-full sm:w-full"

@@ -1,5 +1,5 @@
 import { authenticate } from "@/app/lib/actions";
-import { AdminLoginForm } from "@/app/ui/form/login/admin-login-form";
+import { AdminLoginForm } from "@/app/(admin)/ui/form/login/admin-login-form";
 
 export default function Example() {
   return (

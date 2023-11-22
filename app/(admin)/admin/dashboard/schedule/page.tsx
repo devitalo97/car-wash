@@ -1,10 +1,6 @@
-import {
-  CalendarIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from "@heroicons/react/20/solid";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
-import ScheduleList from "../../ui/schedule-list";
+import ScheduleList from "@/app/(admin)/ui/schedule-list";
 
 const meetings = [
   {

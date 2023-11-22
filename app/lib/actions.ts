@@ -41,7 +41,7 @@ export async function createService(formData: FormData) {
   } catch (error) {
     throw error
   }
-  revalidatePath('/dashboard/services')
+  revalidatePath('/admin/dashboard/services')
 }
 
 export async function updateService(id: string, formData: FormData) {
@@ -68,8 +68,8 @@ export async function updateService(id: string, formData: FormData) {
   } catch (error) {
     throw error
   }
-  revalidatePath(`/dashboard/service/${id}/edit`)
-  redirect(`/dashboard/service/${id}`)
+  revalidatePath(`/admin/dashboard/service/${id}/edit`)
+  redirect(`/admin/dashboard/service/${id}`)
 }
 
 export async function deleteService(id: string) {
@@ -78,8 +78,8 @@ export async function deleteService(id: string) {
   } catch (error) {
     throw error;
   }
-  revalidatePath(`/dashboard/service`)
-  redirect(`/dashboard/service`)
+  revalidatePath(`/admin/dashboard/service`)
+  redirect(`/admin/dashboard/service`)
 }
 
 export async function authenticate(formData: FormData) {

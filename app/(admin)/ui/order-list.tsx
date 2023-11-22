@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "next/link";
-import ListMenu from "../../ui/list-menu";
+import ListMenu from "@/app/ui/list-menu";
 import { fetchOrders } from "@/app/lib/data";
 
 export default async function OrderList({

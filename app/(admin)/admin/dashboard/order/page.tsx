@@ -1,8 +1,8 @@
 import { Suspense } from "react";
-import OrderList from "../../ui/order-list";
-import ClientList from "../../ui/client-list";
+import OrderList from "@/app/(admin)/ui/order-list";
+import ClientList from "@/app/(admin)/ui/client-list";
 import { ClientListSkeleton, OrderListSkeleton } from "@/app/ui/skeletons";
-import SearchBar from "../../ui/search-bar";
+import SearchBar from "@/app/(admin)/ui/search-bar";
 
 export default function Example({
   searchParams,

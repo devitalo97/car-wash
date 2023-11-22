@@ -1,7 +1,7 @@
 import { fetchServiceById } from "@/app/lib/data";
-import ServiceUpdateForm from "@/app/ui/form/service/update-form";
 import { updateService } from "@/app/lib/actions";
 import { notFound } from "next/navigation";
+import ServiceUpdateForm from "@/app/(admin)/ui/form/service/update-form";
 
 export default async function Example({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -11,16 +11,16 @@ export default async function Example({ params }: { params: { id: string } }) {
   }
   const updateInvoiceWithId = updateService.bind(null, service.uuid);
   const breadcrumbs = [
-    { id: 1, name: "Serviços", href: "/dashboard/service" },
+    { id: 1, name: "Serviços", href: "/admin/dashboard/service" },
     {
       id: 2,
       name: "Visulaizar serviço",
-      href: `/dashboard/service/${id}`,
+      href: `/admin/dashboard/service/${id}`,
     },
     {
       id: 2,
       name: "Editar serviço",
-      href: `/dashboard/service/${id}/edit`,
+      href: `/admin/dashboard/service/${id}/edit`,
     },
   ];
   return (

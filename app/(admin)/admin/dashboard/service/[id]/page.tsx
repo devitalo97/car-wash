@@ -6,11 +6,11 @@ import { notFound } from "next/navigation";
 export default async function Example({ params }: { params: { id: string } }) {
   const id = params.id;
   const breadcrumbs = [
-    { id: 1, name: "Serviços", href: "/dashboard/service" },
+    { id: 1, name: "Serviços", href: "/admin/dashboard/service" },
     {
       id: 2,
       name: "Visualizar serviço",
-      href: `/dashboard/service/${id}`,
+      href: `/admin/dashboard/service/${id}`,
     },
   ];
   const service = await fetchServiceById(id);
@@ -94,7 +94,7 @@ export default async function Example({ params }: { params: { id: string } }) {
 
             <div className="mt-10 flex gap-4">
               <Link
-                href={`/dashboard/service/${id}/edit`}
+                href={`/admin/dashboard/service/${id}/edit`}
                 className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
               >
                 Editar

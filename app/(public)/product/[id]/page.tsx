@@ -17,8 +17,8 @@ export default async function Example({ params }: { params: { id: string } }) {
     notFound();
   }
   const breadcrumbs = [
-    { id: 1, name: "Serviços", href: "/service" },
-    { id: 2, name: service.name, href: `/service/${params.id}` },
+    { id: 1, name: "Serviços", href: "/product" },
+    { id: 2, name: service.name, href: `/product/${params.id}` },
   ];
   return (
     <div className="bg-white">

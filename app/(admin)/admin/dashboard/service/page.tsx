@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { OrderListSkeleton } from "@/app/ui/skeletons";
-import SearchBar from "../../ui/search-bar";
-import ServiceList from "../../ui/service-list";
-import ServiceCreateForm from "@/app/ui/form/service/create-form";
+import SearchBar from "@/app/(admin)/ui/search-bar";
+import ServiceList from "@/app/(admin)/ui/service-list";
+import ServiceCreateForm from "@/app/(admin)/ui/form/service/create-form";
 import { createService } from "@/app/lib/actions";
 
 export default function Example({

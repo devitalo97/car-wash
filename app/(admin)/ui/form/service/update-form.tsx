@@ -1,10 +1,10 @@
 "use client";
 
-import Input from "../../input";
-import Textarea from "../../textarea";
-import Button from "../../button";
+import Input from "@/app/ui/input";
+import Textarea from "@/app/ui/textarea";
+import Button from "@/app/ui/button";
 import { PhotoIcon } from "@heroicons/react/24/outline";
-import { Service } from "../../../lib/data";
+import { Service } from "@/app/lib/definitions";
 import { useServiceUpdateForm } from "./useServiceUpdateForm";
 
 interface Props {

@@ -1,6 +1,5 @@
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import ListMenu from "../../ui/list-menu";
 import { fetchFilteredServices } from "@/app/lib/data";
 
 export default async function ServiceList({
@@ -24,7 +23,6 @@ export default async function ServiceList({
         {/* Sort dropdown */}
         {/* <ListMenu /> */}
       </header>
-      {/* Deployment list */}
       <ul role="list" className="divide-y divide-white/5">
         {services.map((service) => (
           <li
@@ -35,7 +33,7 @@ export default async function ServiceList({
               <div className="flex items-center gap-x-3">
                 <h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
                   <Link
-                    href={`/dashboard/service/${service.uuid}`}
+                    href={`/admin/dashboard/service/${service.uuid}`}
                     className="flex gap-x-2"
                   >
                     <span className="truncate">{service.name}</span>
@@ -49,12 +47,6 @@ export default async function ServiceList({
               </div>
               <div className="mt-3 flex items-center gap-x-2.5 text-xs leading-5 text-gray-400">
                 <p className="truncate">{service.description}</p>
-                {/* <svg
-                  viewBox="0 0 2 2"
-                  className="h-0.5 w-0.5 flex-none fill-gray-300"
-                >
-                  <circle cx={1} cy={1} r={1} />
-                </svg> */}
               </div>
             </div>
             <ChevronRightIcon
