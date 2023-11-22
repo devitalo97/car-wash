@@ -231,8 +231,9 @@ const clientsObject: { [x: string]: Client } = {
 //
 type Schedule = {
   uuid: string
-  from: string
-  to: string
+  from: Date
+  to: Date
+  created_at: string
   order_uuid?: string
 }
 export async function fetchSchedules(): Promise<Schedule[]> {
@@ -240,6 +241,10 @@ export async function fetchSchedules(): Promise<Schedule[]> {
     {
       $match: {}
     }]).toArray() as Schedule[]
+}
+export async function createOneSchedule(schedule: Schedule): Promise<Schedule> {
+  await (await clientPromise).db("car-wash").collection("schedule").insertOne(schedule)
+  return schedule
 }
 
 //USER ===================================================================================

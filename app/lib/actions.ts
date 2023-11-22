@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { createOneService, deleteOneService, updateOneService } from './data';
+import { createOneSchedule, createOneService, deleteOneService, updateOneService } from './data';
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache';
 import { uploadFile } from './firebase';
@@ -15,7 +15,6 @@ const CreateServiceFormSchema = z.object({
   description: z.string(),
   created_at: z.string(),
 });
-
 const CreateService = CreateServiceFormSchema.omit({ uuid: true, created_at: true });
 
 export async function createService(formData: FormData) {
@@ -80,6 +79,33 @@ export async function deleteService(id: string) {
   }
   revalidatePath(`/admin/dashboard/service`)
   redirect(`/admin/dashboard/service`)
+}
+
+
+const CreateScheduleFormSchema = z.object({
+  uuid: z.string(),
+  from: z.string(),
+  to: z.string(),
+  created_at: z.string(),
+});
+const CreateSchedule = CreateScheduleFormSchema.omit({ uuid: true, created_at: true });
+
+export async function createSchedule(formData: FormData) {
+  const { from, to } = CreateSchedule.parse(Object.fromEntries(formData.entries()));
+  const created_at = new Date().toISOString()
+  const uuid = uuidv4()
+  try {
+    await createOneSchedule({
+      uuid,
+      from: new Date(from),
+      to: new Date(to),
+      created_at
+    })
+  } catch (error) {
+    throw error
+  }
+  revalidatePath('/admin/dashboard/schedule')
+  redirect('/admin/dashboard/schedule')
 }
 
 export async function authenticate(formData: FormData) {
