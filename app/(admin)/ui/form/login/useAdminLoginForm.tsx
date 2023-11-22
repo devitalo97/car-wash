@@ -30,10 +30,7 @@ export function useAdminLoginForm({
     try {
       await signIn(new FormData(e?.target));
     } catch (error) {
-      alert(JSON.stringify(error));
-      // if ((error as Error).message.includes("CredentialsSignin")) {
       setError("password", { message: "Invalid user." });
-      // }
     }
   });
   return {
