@@ -151,7 +151,7 @@ export async function clientAuthenticate() {
 
 export async function logout() {
   try {
-    await signOut();
+    await signOut({ redirectTo: "/login" });
   } catch (error) {
     throw error;
   }
