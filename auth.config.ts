@@ -9,6 +9,7 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user;
       const isAdmin = isLoggedIn && auth.user.role === "admin";
       const isLoginPage = nextUrl.pathname.startsWith("/login")
+      const isAdminPage = nextUrl.pathname.startsWith("/dashboard")
       const isAuthRoutes =
         nextUrl.pathname.startsWith("/dashboard") ||
         nextUrl.pathname.startsWith("/cart") ||
@@ -21,6 +22,8 @@ export const authConfig = {
       if (isLoggedIn && isLoginPage && isAdmin) return Response.redirect(new URL("/dashboard", nextUrl))
 
       if (isLoggedIn && isLoginPage && !isAdmin) return Response.redirect(new URL("/profile", nextUrl))
+
+      if (isLoggedIn && isAdminPage && !isAdmin) return Response.redirect(new URL("/profile", nextUrl))
 
       return true
     },
