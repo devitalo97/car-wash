@@ -1,23 +1,23 @@
-import { fetchServiceById } from "@/app/lib/data";
+import { deleteSchedule } from "@/app/lib/actions";
+import { fetchScheduleById } from "@/app/lib/data";
 import Link from "next/link";
-import { deleteService } from "@/app/lib/actions";
 import { notFound } from "next/navigation";
 
 export default async function Example({ params }: { params: { id: string } }) {
   const id = params.id;
   const breadcrumbs = [
-    { id: 1, name: "Serviços", href: "/admin/dashboard/service" },
+    { id: 1, name: "Horários", href: "/dashboard/schedule" },
     {
       id: 2,
-      name: "Visualizar serviço",
-      href: `/admin/dashboard/service/${id}`,
+      name: "Visualizar horário",
+      href: `/dashboard/schedule/${id}`,
     },
   ];
-  const service = await fetchServiceById(id);
-  if (!service) {
+  const schedule = await fetchScheduleById(id);
+  if (!schedule) {
     notFound();
   }
-  const deleteServiceWithId = deleteService.bind(null, service.uuid);
+  const deleteScheduleWithId = deleteSchedule.bind(null, schedule.uuid);
 
   return (
     <div className="xl:pl-72 bg-gray-900 h-full">
@@ -53,53 +53,48 @@ export default async function Example({ params }: { params: { id: string } }) {
 
           <div className="mt-4">
             <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              {service.name}
+              {schedule.uuid.split("-")[0]}
             </h1>
           </div>
 
           <section aria-labelledby="information-heading" className="mt-4">
             <h2 id="information-heading" className="sr-only">
-              Product information
+              Informações
             </h2>
 
             <div className="flex items-center">
               <p className="text-lg text-white sm:text-xl">
-                R${service.price / 100}
+                {formatDate(schedule.from)}
+              </p>
+            </div>
+            <div className="flex items-center">
+              <p className="text-lg text-white sm:text-xl">
+                {formatDate(schedule.to)}
               </p>
             </div>
 
             <div className="mt-4 space-y-6">
-              <p className="text-base text-gray-500">{service.description}</p>
+              <p className="text-base text-gray-500">
+                {schedule?.order_uuid ? "com" : "sem"}
+              </p>
             </div>
           </section>
         </div>
 
-        {/* Product image */}
-        <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
-          <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg">
-            <img
-              src={service.imageSrc}
-              alt={service.imageAlt}
-              className="h-full w-full object-cover object-center"
-            />
-          </div>
-        </div>
-
-        {/* Product form */}
         <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
           <section aria-labelledby="options-heading">
             <h2 id="options-heading" className="sr-only">
-              Product options
+              Schedule options
             </h2>
 
             <div className="mt-10 flex gap-4">
               <Link
-                href={`/admin/dashboard/service/${id}/edit`}
+                href={`/dashboard/schedule/${id}/edit`}
                 className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
               >
                 Editar
               </Link>
-              <form action={deleteServiceWithId}>
+              <form action={deleteScheduleWithId}>
                 <button
                   type="submit"
                   className="flex w-[2/3] items-center justify-center rounded-md border border-transparent  px-8 py-3 text-base font-medium text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50 bg-indigo-50 shadow-sm hover:bg-indigo-100"
@@ -113,4 +108,12 @@ export default async function Example({ params }: { params: { id: string } }) {
       </div>
     </div>
   );
+}
+
+function formatDate(date: Date) {
+  const formatter = new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  });
+  return formatter.format(date);
 }

@@ -11,16 +11,16 @@ export default async function Example({ params }: { params: { id: string } }) {
   }
   const updateInvoiceWithId = updateSchedule.bind(null, schedule.uuid);
   const breadcrumbs = [
-    { id: 1, name: "Serviços", href: "/admin/dashboard/schedule" },
+    { id: 1, name: "Serviços", href: "/dashboard/schedule" },
     {
       id: 2,
       name: "Visulaizar serviço",
-      href: `/admin/dashboard/schedule/${id}`,
+      href: `/dashboard/schedule/${id}`,
     },
     {
       id: 2,
       name: "Editar serviço",
-      href: `/admin/dashboard/schedule/${id}/edit`,
+      href: `/dashboard/schedule/${id}/edit`,
     },
   ];
   return (

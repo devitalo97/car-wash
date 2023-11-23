@@ -40,7 +40,7 @@ export async function createService(formData: FormData) {
   } catch (error) {
     throw error
   }
-  revalidatePath('/admin/dashboard/services')
+  revalidatePath('/dashboard/services')
 }
 
 export async function updateService(id: string, formData: FormData) {
@@ -67,8 +67,8 @@ export async function updateService(id: string, formData: FormData) {
   } catch (error) {
     throw error
   }
-  revalidatePath(`/admin/dashboard/service/${id}/edit`)
-  redirect(`/admin/dashboard/service/${id}`)
+  revalidatePath(`/dashboard/service/${id}/edit`)
+  redirect(`/dashboard/service/${id}`)
 }
 
 export async function deleteService(id: string) {
@@ -77,8 +77,8 @@ export async function deleteService(id: string) {
   } catch (error) {
     throw error;
   }
-  revalidatePath(`/admin/dashboard/service`)
-  redirect(`/admin/dashboard/service`)
+  revalidatePath(`/dashboard/service`)
+  redirect(`/dashboard/service`)
 }
 
 
@@ -104,8 +104,8 @@ export async function createSchedule(formData: FormData) {
   } catch (error) {
     throw error
   }
-  revalidatePath('/admin/dashboard/schedule')
-  redirect('/admin/dashboard/schedule')
+  revalidatePath('/dashboard/schedule')
+  redirect('/dashboard/schedule')
 }
 
 export async function deleteSchedule(id: string) {
@@ -114,8 +114,8 @@ export async function deleteSchedule(id: string) {
   } catch (error) {
     throw error;
   }
-  revalidatePath(`/admin/dashboard/schedule`)
-  redirect(`/admin/dashboard/schedule`)
+  revalidatePath(`/dashboard/schedule`)
+  redirect(`/dashboard/schedule`)
 }
 
 export async function updateSchedule(id: string, formData: FormData) {
@@ -128,8 +128,8 @@ export async function updateSchedule(id: string, formData: FormData) {
   } catch (error) {
     throw error
   }
-  revalidatePath(`/admin/dashboard/schedule/${id}/edit`)
-  redirect(`/admin/dashboard/schedule/${id}`)
+  revalidatePath(`/dashboard/schedule/${id}/edit`)
+  redirect(`/dashboard/schedule/${id}`)
 }
 
 export async function authenticate(formData: FormData) {

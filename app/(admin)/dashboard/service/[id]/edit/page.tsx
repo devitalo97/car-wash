@@ -1,13 +1,26 @@
-import ScheduleCreateForm from "@/app/(admin)/ui/form/schedule/create-form";
-import { createSchedule } from "@/app/lib/actions";
+import { fetchServiceById } from "@/app/lib/data";
+import { updateService } from "@/app/lib/actions";
+import { notFound } from "next/navigation";
+import ServiceUpdateForm from "@/app/(admin)/ui/form/service/update-form";
 
-export default async function Example() {
+export default async function Example({ params }: { params: { id: string } }) {
+  const id = params.id;
+  const service = await fetchServiceById(id);
+  if (!service) {
+    notFound();
+  }
+  const updateInvoiceWithId = updateService.bind(null, service.uuid);
   const breadcrumbs = [
-    { id: 1, name: "Horários", href: "/admin/dashboard/schedule/" },
+    { id: 1, name: "Serviços", href: "/dashboard/service" },
     {
       id: 2,
-      name: "Criar horários",
-      href: "/admin/dashboard/schedule/create",
+      name: "Visulaizar serviço",
+      href: `/dashboard/service/${id}`,
+    },
+    {
+      id: 2,
+      name: "Editar serviço",
+      href: `/dashboard/service/${id}/edit`,
     },
   ];
   return (
@@ -41,7 +54,10 @@ export default async function Example() {
           ))}
         </ol>
       </nav>
-      <ScheduleCreateForm createSchedule={createSchedule} />
+      <ServiceUpdateForm
+        updateService={updateInvoiceWithId}
+        service={service}
+      />
     </div>
   );
 }

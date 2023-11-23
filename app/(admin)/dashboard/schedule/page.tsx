@@ -12,7 +12,7 @@ export default function Example() {
       <ScheduleList />
       <aside className="bg-gray-900 lg:fixed lg:bottom-0 lg:right-0 lg:top-16 lg:w-96 lg:overflow-y-auto lg:border-l lg:border-white/5  px-4">
         <Calendar />
-        <Link href={"/admin/dashboard/schedule/create"}>
+        <Link href={"/dashboard/schedule/create"}>
           <Button type="button" label="Add Horário" />
         </Link>
       </aside>

@@ -15,17 +15,17 @@ import { usePathname } from "next/navigation";
 const nav = [
   {
     name: "Ordens",
-    href: "/admin/dashboard/order",
+    href: "/dashboard/order",
     icon: FolderIcon,
   },
   {
     name: "Serviços",
-    href: "/admin/dashboard/service",
+    href: "/dashboard/service",
     icon: ServerIcon,
   },
   {
     name: "Horários",
-    href: "/admin/dashboard/schedule",
+    href: "/dashboard/schedule",
     icon: ClockIcon,
   },
 ];

@@ -20,8 +20,8 @@ export default async function ScheduleList() {
       <ul role="list" className="divide-y divide-white/5">
         {schedules.map((schedule) => (
           <Link
-            href={`/admin/dashboard/schedule/${schedule.uuid}`}
-            key={`/admin/dashboard/schedule/${schedule.uuid}`}
+            href={`/dashboard/schedule/${schedule.uuid}`}
+            key={`/dashboard/schedule/${schedule.uuid}`}
             className="w-full"
           >
             <li

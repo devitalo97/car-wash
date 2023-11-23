@@ -33,7 +33,7 @@ export default async function ServiceList({
               <div className="flex items-center gap-x-3">
                 <h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
                   <Link
-                    href={`/admin/dashboard/service/${service.uuid}`}
+                    href={`/dashboard/service/${service.uuid}`}
                     className="flex gap-x-2"
                   >
                     <span className="truncate">{service.name}</span>
