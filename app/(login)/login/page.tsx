@@ -1,4 +1,4 @@
-import { authenticate } from "@/app/lib/actions";
+import { adminAuthenticate, clientAuthenticate } from "@/app/lib/actions";
 import { AdminLoginForm } from "@/app/(admin)/ui/form/login/admin-login-form";
 
 export default function Example() {
@@ -24,7 +24,7 @@ export default function Example() {
           </h2>
         </div>
 
-        <AdminLoginForm signIn={authenticate} />
+        <AdminLoginForm signIn={clientAuthenticate} />
       </div>
     </>
   );

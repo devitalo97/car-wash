@@ -1,11 +1,13 @@
 import NextAuth, { User } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
+import Google from 'next-auth/providers/google'
+
 import { authConfig } from './auth.config';
 import { z } from 'zod';
 import { fetchUserByEmail } from './app/lib/data';
 import bcrypt from 'bcrypt'
 
-export const { auth, signIn, signOut } = NextAuth({
+export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
@@ -24,6 +26,10 @@ export const { auth, signIn, signOut } = NextAuth({
         return null;
       },
     }),
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    })
   ],
 });
 

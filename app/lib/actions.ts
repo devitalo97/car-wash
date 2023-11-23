@@ -132,13 +132,22 @@ export async function updateSchedule(id: string, formData: FormData) {
   redirect(`/dashboard/schedule/${id}`)
 }
 
-export async function authenticate(formData: FormData) {
+export async function adminAuthenticate(formData: FormData) {
   try {
     await signIn('credentials', Object.fromEntries(formData));
   } catch (error) {
     throw error;
   }
 }
+
+export async function clientAuthenticate() {
+  try {
+    await signIn('google');
+  } catch (error) {
+    throw error;
+  }
+}
+
 
 export async function logout() {
   try {
