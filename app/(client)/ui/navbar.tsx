@@ -1,12 +1,14 @@
-import {
-  MagnifyingGlassIcon,
-  ShoppingBagIcon,
-} from "@heroicons/react/24/outline";
+import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import br from "@/public/br.svg";
 import Link from "next/link";
 import Image from "next/image";
+import { auth } from "@/auth";
+import { logout } from "@/app/lib/actions";
+import { CartButton } from "./cart-button";
 
-export default function NavBar() {
+export default async function NavBar() {
+  const session = await auth();
+  const isLoggedIn = !!session?.user;
   return (
     <div className="bg-white">
       <nav
@@ -29,19 +31,16 @@ export default function NavBar() {
 
             <div className="ml-auto flex items-center">
               <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
-                <a
-                  href="#"
-                  className="text-sm font-medium text-gray-700 hover:text-gray-800"
-                >
-                  Log-in
-                </a>
+                <LoginButton isLoggedIn={isLoggedIn} />
                 <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
-                <a
-                  href="#"
-                  className="text-sm font-medium text-gray-700 hover:text-gray-800"
-                >
-                  Criar conta
-                </a>
+                {!isLoggedIn && (
+                  <a
+                    href="#"
+                    className="text-sm font-medium text-gray-700 hover:text-gray-800"
+                  >
+                    Criar conta
+                  </a>
+                )}
               </div>
 
               <div className="hidden lg:ml-8 lg:flex">
@@ -59,27 +58,8 @@ export default function NavBar() {
                 </a>
               </div>
 
-              {/* Search */}
-              <div className="flex lg:ml-6">
-                <a href="#" className="p-2 text-gray-400 hover:text-gray-500">
-                  <span className="sr-only">Search</span>
-                  <MagnifyingGlassIcon className="h-6 w-6" aria-hidden="true" />
-                </a>
-              </div>
-
               {/* Cart */}
-              <div className="ml-4 flow-root lg:ml-6">
-                <a href="#" className="group -m-2 flex items-center p-2">
-                  <ShoppingBagIcon
-                    className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
-                    aria-hidden="true"
-                  />
-                  <span className="ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800">
-                    0
-                  </span>
-                  <span className="sr-only">items in cart, view bag</span>
-                </a>
-              </div>
+              <CartButton />
             </div>
           </div>
         </div>
@@ -87,3 +67,23 @@ export default function NavBar() {
     </div>
   );
 }
+
+const LoginButton = async ({ isLoggedIn }: { isLoggedIn: boolean }) => {
+  return isLoggedIn ? (
+    <form action={logout}>
+      <button
+        type="submit"
+        className="text-sm font-medium text-gray-700 hover:text-gray-800"
+      >
+        {"Log-out"}
+      </button>
+    </form>
+  ) : (
+    <Link
+      href={"/login"}
+      className="text-sm font-medium text-gray-700 hover:text-gray-800"
+    >
+      Log-in
+    </Link>
+  );
+};

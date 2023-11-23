@@ -12,7 +12,7 @@ export const authConfig = {
       const isAdminPage = nextUrl.pathname.startsWith("/dashboard")
       const isAuthRoutes =
         nextUrl.pathname.startsWith("/dashboard") ||
-        nextUrl.pathname.startsWith("/shop") ||
+        nextUrl.pathname.startsWith("/cart") ||
         nextUrl.pathname.startsWith("/profile")
 
       if (!isAuthRoutes && !isLoggedIn) return true
