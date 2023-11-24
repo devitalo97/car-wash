@@ -6,18 +6,21 @@ import { v4 as uuidv4 } from "uuid";
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  dark?: boolean;
 }
 
 // eslint-disable-next-line react/display-name
 const Input = forwardRef<HTMLInputElement, Props>(
-  ({ label, error, ...rest }, ref) => {
+  ({ label, error, dark = true, ...rest }, ref) => {
     const id = rest?.id ?? uuidv4();
+
+    const labelColor = dark ? "text-white" : "text-gray-900";
     return (
       <div>
         {label ? (
           <label
             htmlFor={id}
-            className="block text-sm font-medium leading-6 text-white"
+            className={clsx("block text-sm font-medium leading-6", labelColor)}
           >
             {label}
           </label>
