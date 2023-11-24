@@ -12,6 +12,7 @@ import {
 import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { User } from "@/app/lib/definitions";
 
 const nav = [
   {
@@ -36,7 +37,13 @@ const nav = [
   },
 ];
 
-export default function SideBar({ logout }: { logout: () => Promise<void> }) {
+export default function SideBar({
+  logout,
+  user,
+}: {
+  logout: () => Promise<void>;
+  user: User;
+}) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const navigation = useMemo(() => {
@@ -139,11 +146,11 @@ export default function SideBar({ logout }: { logout: () => Promise<void> }) {
                         >
                           <img
                             className="h-8 w-8 rounded-full bg-gray-800"
-                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                            src={user.avatar}
                             alt=""
                           />
                           <span className="sr-only">Your profile</span>
-                          <span aria-hidden="true">Tom Cook</span>
+                          <span aria-hidden="true">{user.name}</span>
                           <SignOutButton logout={logout} />
                         </a>
                       </li>
@@ -200,11 +207,11 @@ export default function SideBar({ logout }: { logout: () => Promise<void> }) {
                 >
                   <img
                     className="h-8 w-8 rounded-full bg-gray-800"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={user.avatar}
                     alt=""
                   />
                   <span className="sr-only">Your profile</span>
-                  <span aria-hidden="true">Tom Cook</span>
+                  <span aria-hidden="true">{user.name}</span>
                   <SignOutButton logout={logout} />
                 </a>
               </li>
