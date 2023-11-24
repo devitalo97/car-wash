@@ -47,7 +47,7 @@ export default async function OrderList({
                     <span className="truncate">{order.service_uuid.name}</span>
                     <span className="text-gray-400">/</span>
                     <span className="whitespace-nowrap">
-                      {order.client_uuid.name}
+                      {order.user_uuid.name}
                     </span>
                     <span className="absolute inset-0" />
                   </Link>

@@ -1,7 +1,7 @@
 import { home } from "@/public/home";
 import { unstable_noStore as noStore } from 'next/cache';
 import clientPromise from "./mongodb";
-import { Client, Order, Schedule, Service, User } from "./definitions";
+import { Order, Schedule, Service, User } from "./definitions";
 
 //SERVICE ================================================================================
 //
@@ -20,10 +20,7 @@ export async function fetchFilteredServices(query: string, currentPage: number):
           { description: { $regex: query, $options: 'i' } }
         ]
       }
-    }]).toArray()).map((service) => ({
-      ...service as Service,
-      imageAlt: "alt image"
-    }))
+    }]).toArray()) as Service[]
 }
 export async function createOneService(service: Service): Promise<Service> {
   await (await clientPromise).db("car-wash").collection("service").insertOne(service)
@@ -132,9 +129,9 @@ export async function fetchOrders(query: string, currentPage: number): Promise<O
   return [...Object.values(ordersObject), ...Object.values(ordersObject)].map(order => ({
     ...order,
     service_uuid: servicesObject["1"],
-    client_uuid: clientsObject["1"],
+    user_uuid: usersObject["1"],
     schedule_uuid: {} as Schedule
-  })).filter(el => el.client_uuid.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()))
+  })).filter(el => el.user_uuid.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()))
 }
 export async function fetchOrderByUUID(uuid: string): Promise<Order> {
   noStore()
@@ -146,7 +143,7 @@ const ordersObject: { [x: string]: Order } = {
     uuid: "1",
     service_uuid: "1",
     schedule_uuid: "1",
-    client_uuid: "1",
+    user_uuid: "1",
     status: "pending",
     delivery: {
       with: true,
@@ -158,7 +155,7 @@ const ordersObject: { [x: string]: Order } = {
     service_uuid: "1",
     schedule_uuid: "1",
     status: "paid",
-    client_uuid: "1",
+    user_uuid: "1",
     delivery: {
       with: true,
       location: "Rua 14, numero 768"
@@ -169,7 +166,7 @@ const ordersObject: { [x: string]: Order } = {
     service_uuid: "1",
     schedule_uuid: "1",
     status: "paid",
-    client_uuid: "1",
+    user_uuid: "1",
     delivery: {
       with: true,
       location: "Rua 17, numero 55"
@@ -180,52 +177,13 @@ const ordersObject: { [x: string]: Order } = {
     service_uuid: "1",
     schedule_uuid: "1",
     status: "pending",
-    client_uuid: "1",
+    user_uuid: "1",
     delivery: {
       with: true,
       location: "Rua 35, numero 99"
     }
   },
 }
-
-
-//CLIENT =================================================================================
-//
-export async function fetchClients(): Promise<Client[]> {
-  noStore()
-  await new Promise<void>((resolve) => setTimeout(resolve, 500))
-  return Object.values(clientsObject)
-}
-export async function fetchClientByUUID(uuid: string): Promise<Client> {
-  noStore()
-  return clientsObject[uuid]
-}
-
-const clientsObject: { [x: string]: Client } = {
-  "1": {
-    uuid: "1",
-    name: "Client#00",
-    email: 'client00@mail.com',
-    created_at: new Date().toISOString(),
-    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    orders_uuid: ["1"],
-  },
-  "2": {
-    uuid: "2",
-    name: "Client#01",
-    email: 'client01@mail.com',
-    created_at: new Date().toISOString(),
-    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  "3": {
-    uuid: "3",
-    name: "Client#02",
-    email: 'client02@mail.com',
-    created_at: new Date().toISOString(),
-    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-}
-
 
 //SCHEDULE ===============================================================================
 //
@@ -263,15 +221,57 @@ export async function fetchUserByEmail(email: string): Promise<User | undefined>
     throw new Error('Failed to fetch user.');
   }
 }
+export async function fetchFilteredClients(query: string, currentPage: number): Promise<User[]> {
+  return (await (await clientPromise).db("car-wash").collection("users").aggregate([
+    {
+      $match: {
+        $or: [
+          { name: { $regex: query, $options: 'i' } },
+          { email: { $regex: query, $options: 'i' } }
+        ],
+        role: "client"
+      }
+    }]).toArray()) as User[]
+}
 
 
+const usersObject: { [x: string]: User } = {
+  "1": {
+    uuid: "1",
+    name: "Client#00",
+    password: "Client#00",
+    role: "client",
+    email: 'client00@mail.com',
+    created_at: new Date().toISOString(),
+    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+    orders_uuid: ["1"],
+  },
+  "2": {
+    uuid: "2",
+    name: "Client#01",
+    password: "Client#01",
+    role: "client",
+    email: 'client01@mail.com',
+    created_at: new Date().toISOString(),
+    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+  },
+  "3": {
+    uuid: "3",
+    name: "Client#02",
+    password: "Client#02",
+    role: "client",
+    email: 'client02@mail.com',
+    created_at: new Date().toISOString(),
+    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+  },
+}
 
 
 export type OrderQueryResult = {
   uuid: string
   service_uuid: Service
   schedule_uuid: Schedule
-  client_uuid: Client
+  user_uuid: User
   status: 'pending' | 'paid'
   delivery: {
     with: boolean

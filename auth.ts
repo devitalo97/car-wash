@@ -35,9 +35,10 @@ export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
         return {
           name: profile.name,
           email: profile.email,
-          image: profile.picture,
           role: "client",
           id: profile.sub,
+          avatar: profile.picture,
+          created_at: new Date(),
         }
       }
     })

@@ -28,12 +28,23 @@ export const authConfig = {
       return true
     },
     jwt({ token, user }) {
-      if (user) token.role = user.role
+      if (user) {
+        token = {
+          ...token,
+          role: user.role,
+          avatar: user.avatar,
+          created_at: user.created_at,
+        }
+      }
       return token
     },
     session({ session, token }) {
       // @ts-ignore
       session.user.role = token.role
+      // @ts-ignore
+      session.user.avatar = token.avatar
+      // @ts-ignore
+      session.user.created_at = token.created_at
       return session
     }
   },
