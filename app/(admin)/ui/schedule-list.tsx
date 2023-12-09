@@ -1,4 +1,5 @@
 import { fetchSchedules } from "@/app/lib/data";
+import { formatDate, formatTime } from "@/app/utils/formatters";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
@@ -43,7 +44,15 @@ export default async function ScheduleList() {
                     </dt>
                     <dd>
                       <time dateTime={schedule.from.toISOString()}>
-                        {schedule.from.toString().split("GMT")[0]}
+                        {formatTime(schedule.from)}
+                      </time>
+                      -
+                      <time dateTime={schedule.to.toISOString()}>
+                        {formatTime(schedule.to)}
+                      </time>
+                      <br />
+                      <time dateTime={schedule.from.toISOString()}>
+                        {formatDate(schedule.from)}
                       </time>
                     </dd>
                   </div>
