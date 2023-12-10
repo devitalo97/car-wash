@@ -6,6 +6,7 @@ import { Order, Schedule, Service, User } from "./definitions";
 //SERVICE ================================================================================
 //
 export async function fetchServices(): Promise<Service[]> {
+  await new Promise<void>((resolve) => setTimeout(resolve, 800))
   return await (await clientPromise).db("car-wash").collection("service").aggregate([
     {
       $match: {}
@@ -189,6 +190,7 @@ const ordersObject: { [x: string]: Order } = {
 //
 
 export async function fetchSchedules(): Promise<Schedule[]> {
+  await new Promise<void>((resolve) => setTimeout(resolve, 800))
   return await (await clientPromise).db("car-wash").collection("schedule").aggregate([
     {
       $match: {}
@@ -242,7 +244,7 @@ const usersObject: { [x: string]: User } = {
     password: "Client#00",
     role: "client",
     email: 'client00@mail.com',
-    created_at: new Date().toISOString(),
+    created_at: new Date(),
     avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
     orders_uuid: ["1"],
   },
@@ -252,7 +254,7 @@ const usersObject: { [x: string]: User } = {
     password: "Client#01",
     role: "client",
     email: 'client01@mail.com',
-    created_at: new Date().toISOString(),
+    created_at: new Date(),
     avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
   },
   "3": {
@@ -261,7 +263,7 @@ const usersObject: { [x: string]: User } = {
     password: "Client#02",
     role: "client",
     email: 'client02@mail.com',
-    created_at: new Date().toISOString(),
+    created_at: new Date(),
     avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
   },
 }
