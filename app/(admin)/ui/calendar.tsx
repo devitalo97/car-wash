@@ -1,7 +1,9 @@
 "use client";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 type Day = {
   date: string;
@@ -15,67 +17,12 @@ type DayRange = {
 };
 
 export function Calendar() {
+  //state and functions for handle calendar values
   const [days, setDays] = useState<Day[]>([]);
   const [selectedRange, setSelectedRange] = useState<DayRange>({
     start: null,
     end: null,
   });
-
-  useEffect(() => {
-    const generateDays = () => {
-      const currentDate = new Date();
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth() + 1; // Mês começa do zero
-      const firstDayOfMonth = new Date(year, month - 1, 1);
-      const lastDayOfMonth = new Date(year, month, 0);
-      const numberOfDays = lastDayOfMonth.getDate();
-
-      const newDays = [];
-
-      // Adiciona 5 dias do mês anterior
-      for (let i = 5; i >= 1; i--) {
-        const date = new Date(
-          year,
-          month - 2,
-          lastDayOfMonth.getDate() - i + 1
-        );
-        newDays.push({
-          date: `${year}-${(month - 1).toString().padStart(2, "0")}-${date
-            .getDate()
-            .toString()
-            .padStart(2, "0")}`,
-          isCurrentMonth: false,
-        });
-      }
-
-      // Adiciona os dias do mês atual
-      for (let i = 1; i <= numberOfDays; i++) {
-        const date = new Date(year, month - 1, i);
-        const isToday = date.toDateString() === currentDate.toDateString();
-        newDays.push({
-          date: `${year}-${month.toString().padStart(2, "0")}-${i
-            .toString()
-            .padStart(2, "0")}`,
-          isCurrentMonth: true,
-          isToday,
-        });
-      }
-
-      // Adiciona 6 dias do próximo mês
-      for (let i = 1; i <= 6; i++) {
-        const date = new Date(year, month, i);
-        newDays.push({
-          date: `${year}-${(month + 1).toString().padStart(2, "0")}-${i
-            .toString()
-            .padStart(2, "0")}`,
-          isCurrentMonth: false,
-        });
-      }
-
-      setDays(newDays);
-    };
-    generateDays();
-  }, []);
 
   const handleDaySelection = (day: Day) => {
     setSelectedRange((prev) => {
@@ -162,6 +109,87 @@ export function Calendar() {
 
     return false;
   };
+
+  useEffect(() => {
+    const generateDays = () => {
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1; // Mês começa do zero
+      const firstDayOfMonth = new Date(year, month - 1, 1);
+      const lastDayOfMonth = new Date(year, month, 0);
+      const numberOfDays = lastDayOfMonth.getDate();
+
+      const newDays = [];
+
+      // Adiciona 5 dias do mês anterior
+      for (let i = 5; i >= 1; i--) {
+        const date = new Date(
+          year,
+          month - 2,
+          lastDayOfMonth.getDate() - i + 1
+        );
+        newDays.push({
+          date: `${year}-${(month - 1).toString().padStart(2, "0")}-${date
+            .getDate()
+            .toString()
+            .padStart(2, "0")}`,
+          isCurrentMonth: false,
+        });
+      }
+
+      // Adiciona os dias do mês atual
+      for (let i = 1; i <= numberOfDays; i++) {
+        const date = new Date(year, month - 1, i);
+        const isToday = date.toDateString() === currentDate.toDateString();
+        newDays.push({
+          date: `${year}-${month.toString().padStart(2, "0")}-${i
+            .toString()
+            .padStart(2, "0")}`,
+          isCurrentMonth: true,
+          isToday,
+        });
+      }
+
+      // Adiciona 6 dias do próximo mês
+      for (let i = 1; i <= 6; i++) {
+        const date = new Date(year, month, i);
+        newDays.push({
+          date: `${year}-${(month + 1).toString().padStart(2, "0")}-${i
+            .toString()
+            .padStart(2, "0")}`,
+          isCurrentMonth: false,
+        });
+      }
+
+      setDays(newDays);
+    };
+    generateDays();
+  }, []);
+
+  //state and functions for handle query params updates
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+
+  const handleSearch = useDebouncedCallback((term: string) => {
+    const params = new URLSearchParams(searchParams);
+    if (term) {
+      params.set("query", term);
+    } else {
+      params.delete("query");
+    }
+    replace(`${pathname}?${params.toString()}`);
+  }, 500);
+
+  useEffect(() => {
+    if (selectedRange.start || selectedRange.end)
+      handleSearch(
+        JSON.stringify({
+          start: selectedRange.start?.date,
+          end: selectedRange.end?.date,
+        })
+      );
+  }, [selectedRange, handleSearch]);
 
   return (
     <div className="mt-4 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 xl:col-start-9">
