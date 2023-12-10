@@ -1,6 +1,7 @@
 import { fetchSchedules } from "@/app/lib/data";
+import { Badge } from "@/app/ui/badge";
 import { formatDate, formatTime } from "@/app/utils/formatters";
-import { CalendarIcon } from "@heroicons/react/24/outline";
+import { CalendarIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 export default async function ScheduleList() {
@@ -27,21 +28,19 @@ export default async function ScheduleList() {
           >
             <li
               key={schedule.uuid}
-              className="flex space-x-6 py-6 xl:static hover:bg-white/20 hover:cursor-pointer px-4"
+              className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8
+              hover:bg-white/20 hover:cursor-pointer"
             >
-              <div className="flex-auto">
-                <h3 className="pr-10 font-semibold text-white xl:pr-0">
-                  {schedule.order_uuid ?? "Horário Livre"}
-                </h3>
-                <dl className="mt-2 flex flex-col text-gray-500 xl:flex-row xl:gap-2">
-                  <div className="flex items-start space-x-3">
-                    <dt className="mt-0.5">
-                      <span className="sr-only">Date</span>
-                      <CalendarIcon
-                        className="h-5 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </dt>
+              <dl className="min-w-0 flex-auto text-gray-500 xl:flex-row xl:gap-2">
+                <div className="flex items-start space-x-3">
+                  <dt className="mt-0.5">
+                    <span className="sr-only">Date</span>
+                    <CalendarIcon
+                      className="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </dt>
+                  <div className="flex flex-start gap-4">
                     <dd>
                       <time dateTime={schedule.from.toISOString()}>
                         {formatTime(schedule.from)}
@@ -50,14 +49,23 @@ export default async function ScheduleList() {
                       <time dateTime={schedule.to.toISOString()}>
                         {formatTime(schedule.to)}
                       </time>
-                      <br />
+                    </dd>
+                    <dd>
                       <time dateTime={schedule.from.toISOString()}>
                         {formatDate(schedule.from)}
                       </time>
                     </dd>
                   </div>
-                </dl>
-              </div>
+                </div>
+              </dl>
+              <Badge
+                status={!("order_uuid" in schedule)}
+                title={schedule.order_uuid ? "Agendado" : "Livre"}
+              />
+              <ChevronRightIcon
+                className="h-5 w-5 flex-none text-gray-400"
+                aria-hidden="true"
+              />
             </li>
           </Link>
         ))}
