@@ -65,7 +65,7 @@ export default async function Example({ params }: { params: { id: string } }) {
 
             <div className="flex items-center">
               <p className="text-lg text-gray-900 sm:text-xl">
-                {service.price}
+                R$ {service.price / 100}
               </p>
 
               <div className="ml-4 border-l border-gray-300 pl-4">
@@ -98,16 +98,6 @@ export default async function Example({ params }: { params: { id: string } }) {
             <div className="mt-4 space-y-6">
               <p className="text-base text-gray-500">{service.description}</p>
             </div>
-
-            <div className="mt-6 flex items-center">
-              <CheckIcon
-                className="h-5 w-5 flex-shrink-0 text-green-500"
-                aria-hidden="true"
-              />
-              <p className="ml-2 text-sm text-gray-500">
-                In stock and ready to ship
-              </p>
-            </div>
           </section>
         </div>
 
@@ -130,18 +120,6 @@ export default async function Example({ params }: { params: { id: string } }) {
             </h2>
 
             <form>
-              <div className="mt-4">
-                <a
-                  href="#"
-                  className="group inline-flex text-sm text-gray-500 hover:text-gray-700"
-                >
-                  <span>What size should I buy?</span>
-                  <QuestionMarkCircleIcon
-                    className="ml-2 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
-                    aria-hidden="true"
-                  />
-                </a>
-              </div>
               <div className="mt-10">
                 <button
                   type="submit"
@@ -157,7 +135,7 @@ export default async function Example({ params }: { params: { id: string } }) {
                     aria-hidden="true"
                   />
                   <span className="text-gray-500 hover:text-gray-700">
-                    Lifetime Guarantee
+                    Garantia na execução do serviço
                   </span>
                 </a>
               </div>

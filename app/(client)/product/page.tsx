@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { fetchServices } from "@/app/lib/data";
 
 export default async function Example() {
@@ -59,7 +58,6 @@ export default async function Example() {
                   </div>
                 ))}
               </div>
-              ;
             </section>
           </div>
         </main>

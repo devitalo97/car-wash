@@ -17,7 +17,6 @@ export function useScheduleUpdateForm({
   updateSchedule: (formData: FormData) => Promise<void>
   schedule: Schedule
 }) {
-  console.log('schedule', schedule)
   const {
     register,
     handleSubmit: submit,

@@ -116,12 +116,12 @@ export default function Page() {
                   </div>
                 </div>
 
-                <a
-                  href="#"
+                <Link
+                  href="/schedule"
                   className="inline-block rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-center font-medium text-white hover:bg-indigo-700"
                 >
                   Agendar horário
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -139,13 +139,13 @@ export default function Page() {
               >
                 Escolha por categoria
               </h2>
-              <a
-                href="#"
+              <Link
+                href="/product"
                 className="hidden text-sm font-semibold text-indigo-600 hover:text-indigo-500 sm:block"
               >
                 Veja todos os serviços
                 <span aria-hidden="true"> &rarr;</span>
-              </a>
+              </Link>
             </div>
 
             <div className="mt-6 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:grid-rows-2 sm:gap-x-6 lg:gap-8">
@@ -225,13 +225,13 @@ export default function Page() {
             </div>
 
             <div className="mt-6 sm:hidden">
-              <a
-                href="#"
+              <Link
+                href="/product"
                 className="block text-sm font-semibold text-indigo-600 hover:text-indigo-500"
               >
                 Veja todos os serviços
                 <span aria-hidden="true"> &rarr;</span>
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -264,12 +264,12 @@ export default function Page() {
                 tempo. Opte por uma solução prática que mantém seu veículo limpo
                 sem comprometer seu dia.
               </p>
-              <a
-                href="#"
+              <Link
+                href="/schedule"
                 className="mt-8 block w-full rounded-md border border-transparent bg-white px-8 py-3 text-base font-medium text-gray-900 hover:bg-gray-100 sm:w-auto"
               >
-                Agende um horário
-              </a>
+                Agendar horário
+              </Link>
             </div>
           </div>
         </section>
@@ -284,13 +284,13 @@ export default function Page() {
               >
                 Serviços isolados
               </h2>
-              <a
-                href="#"
+              <Link
+                href="/product"
                 className="hidden text-sm font-semibold text-indigo-600 hover:text-indigo-500 sm:block"
               >
                 Veja todos os serviços
                 <span aria-hidden="true"> &rarr;</span>
-              </a>
+              </Link>
             </div>
 
             <div className="mt-6 grid grid-cols-1 gap-y-10 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-0 lg:gap-x-8">
@@ -315,13 +315,13 @@ export default function Page() {
             </div>
 
             <div className="mt-6 sm:hidden">
-              <a
-                href="#"
+              <Link
+                href="/product"
                 className="block text-sm font-semibold text-indigo-600 hover:text-indigo-500"
               >
                 Veja todos os serviços
                 <span aria-hidden="true"> &rarr;</span>
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -344,10 +344,13 @@ export default function Page() {
                       Limpeza Completa
                     </h2>
                     <div className="mt-6 text-base">
-                      <a href="#" className="font-semibold text-white">
-                        Agendar serviço
+                      <Link
+                        href="/schedule"
+                        className="font-semibold text-white"
+                      >
+                        Agendar horário
                         <span aria-hidden="true"> &rarr;</span>
-                      </a>
+                      </Link>
                     </div>
                   </div>
 
