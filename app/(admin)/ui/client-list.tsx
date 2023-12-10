@@ -26,7 +26,7 @@ export default async function ClientList({
         {clients.map((client) => (
           <li
             key={client.uuid}
-            className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 hover:bg-white/20"
+            className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 hover:bg-white/20 hover:cursor-pointer"
           >
             <div className="min-w-0 flex-auto flex items-center gap-x-3">
               <img

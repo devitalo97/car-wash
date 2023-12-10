@@ -30,7 +30,7 @@ export default async function OrderList({
         {orders.map((order) => (
           <li
             key={order.uuid}
-            className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8"
+            className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 hover:bg-white/20 hover:cursor-pointer"
           >
             <div className="min-w-0 flex-auto">
               <div className="flex items-center gap-x-3">
