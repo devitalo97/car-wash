@@ -17,7 +17,7 @@ export default async function Example({ params }: { params: { id: string } }) {
   if (!service) {
     notFound();
   }
-  const deleteServiceWithId = deleteService.bind(null, service.uuid);
+  const deleteServiceWithId = deleteService.bind(null, service);
 
   return (
     <div className="xl:pl-72 bg-gray-900 h-full">
