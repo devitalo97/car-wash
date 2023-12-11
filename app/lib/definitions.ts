@@ -15,12 +15,9 @@ export type Order = {
   uuid: string
   service_uuid: string
   schedule_uuid: string
-  user_uuid: string
-  status: 'pending' | 'paid'
-  delivery: {
-    with: boolean
-    location?: string
-  }
+  status: 'pending' | 'complete'
+  stripe_session_id: string
+  user_uuid?: string
 }
 
 export type User = {
