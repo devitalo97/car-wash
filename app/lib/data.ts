@@ -2,6 +2,7 @@ import { home } from "@/public/home";
 import { unstable_noStore as noStore } from 'next/cache';
 import clientPromise from "./mongodb";
 import { Order, Schedule, Service, User } from "./definitions";
+import Stripe from 'stripe'
 
 //SERVICE ================================================================================
 //
@@ -281,4 +282,58 @@ export type OrderQueryResult = {
   }
 }
 
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+//STRIPE ================================================================================
+export async function createStripeProductAndPrice(service: Service) {
+  const product = await stripe.products.create({
+    name: service.name,
+    images: [service.imageSrc],
+    description: service.description,
+  });
+
+  const price = await stripe.prices.create({
+    currency: 'brl',
+    unit_amount: service.price,
+    product: product.id
+  });
+
+  return {
+    product, price
+  }
+}
+
+export async function createStripePrice(stripe_product_id: string, unit_amount: number) {
+  const price = await stripe.prices.create({
+    currency: 'brl',
+    unit_amount: unit_amount,
+    product: stripe_product_id
+  });
+
+  return price
+}
+
+export async function deactivateStripePrice(stripe_price_id: string) {
+  const price = await stripe.prices.update(stripe_price_id, {
+    active: false
+  });
+  return price
+}
+
+export async function updateStripeProduct(stripe_product_id: string, service: Service) {
+  const product = await stripe.products.update(stripe_product_id, {
+    name: service.name,
+    images: [service.imageSrc],
+    description: service.description,
+  });
+  return product
+}
+
+export async function deactivateStripeProduct(stripe_product_id: string) {
+  const price = await stripe.products.update(stripe_product_id, {
+    active: false
+  });
+  return price
+}
 
