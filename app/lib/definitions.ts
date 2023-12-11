@@ -6,6 +6,8 @@ export type Service = {
   created_at: string
   imageSrc: string
   imageAlt: string
+  stripe_product_id?: string
+  stripe_price_id?: string
 }
 
 
