@@ -4,30 +4,48 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { Combobox as HCombobox } from "@headlessui/react";
 import clsx from "clsx";
 
-const people = [{ id: 1, name: "Leslie Alexander", online: true }];
-
-type Props = {
+interface Props<T> {
   label?: string;
   placeholder?: string;
   inputClassname?: string;
-};
+  name?: string;
+  data: T[];
+  extractCompareForFilterValue: (data: T) => string;
+  extractDisplayValue: (data: T) => string;
+  extractKeyValue: (data: T) => string;
+  extractAvailableValue?: (data: T) => boolean;
+  extractHiddenInputValue?: (data: T | null) => any;
+}
 
-export default function Example({ label, placeholder, inputClassname }: Props) {
+export default function Combobox<T>({
+  label,
+  placeholder,
+  inputClassname,
+  name,
+  data,
+  extractCompareForFilterValue,
+  extractDisplayValue,
+  extractAvailableValue,
+  extractKeyValue,
+  extractHiddenInputValue,
+}: Props<T>) {
   const [query, setQuery] = useState("");
-  const [selectedPerson, setSelectedPerson] = useState(null);
+  const [selected, setSelected] = useState<T | null>(null);
 
-  const filteredPeople =
+  const filtered =
     query === ""
-      ? people
-      : people.filter((person) => {
-          return person.name.toLowerCase().includes(query.toLowerCase());
+      ? data
+      : data.filter((d) => {
+          return extractCompareForFilterValue(d)
+            .toLowerCase()
+            .includes(query.toLowerCase());
         });
 
   return (
     <HCombobox
       as="div"
-      value={selectedPerson}
-      onChange={setSelectedPerson}
+      value={selected}
+      onChange={setSelected}
       className={"bg-white"}
     >
       {label && (
@@ -43,7 +61,7 @@ export default function Example({ label, placeholder, inputClassname }: Props) {
           )}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={placeholder}
-          displayValue={(person: any) => person?.name}
+          displayValue={(d: T) => extractDisplayValue(d)}
         />
         <HCombobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
           <ChevronUpDownIcon
@@ -52,12 +70,12 @@ export default function Example({ label, placeholder, inputClassname }: Props) {
           />
         </HCombobox.Button>
 
-        {filteredPeople.length > 0 && (
+        {filtered.length > 0 && (
           <HCombobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-            {filteredPeople.map((person) => (
+            {filtered.map((d) => (
               <HCombobox.Option
-                key={person.id}
-                value={person}
+                key={extractKeyValue(d)}
+                value={d}
                 className={({ active }) =>
                   clsx(
                     "relative cursor-default select-none py-2 pl-3 pr-9",
@@ -68,24 +86,30 @@ export default function Example({ label, placeholder, inputClassname }: Props) {
                 {({ active, selected }) => (
                   <>
                     <div className="flex items-center">
-                      <span
-                        className={clsx(
-                          "inline-block h-2 w-2 flex-shrink-0 rounded-full",
-                          person.online ? "bg-green-400" : "bg-gray-200"
-                        )}
-                        aria-hidden="true"
-                      />
+                      {extractAvailableValue && (
+                        <span
+                          className={clsx(
+                            "inline-block h-2 w-2 flex-shrink-0 rounded-full",
+                            extractAvailableValue(d)
+                              ? "bg-green-400"
+                              : "bg-gray-200"
+                          )}
+                          aria-hidden="true"
+                        />
+                      )}
                       <span
                         className={clsx(
                           "ml-3 truncate",
                           selected && "font-semibold"
                         )}
                       >
-                        {person.name}
-                        <span className="sr-only">
-                          {" "}
-                          is {person.online ? "online" : "offline"}
-                        </span>
+                        {extractDisplayValue(d)}
+                        {extractAvailableValue && (
+                          <span className="sr-only">
+                            {" "}
+                            is {extractAvailableValue(d) ? "online" : "offline"}
+                          </span>
+                        )}
                       </span>
                     </div>
 
@@ -106,6 +130,14 @@ export default function Example({ label, placeholder, inputClassname }: Props) {
           </HCombobox.Options>
         )}
       </div>
+      <HCombobox
+        as="div"
+        value={extractHiddenInputValue?.(selected) ?? selected}
+        onChange={setSelected}
+        className={"bg-white"}
+        name={name}
+        hidden
+      />
     </HCombobox>
   );
 }
