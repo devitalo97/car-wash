@@ -1,13 +1,11 @@
 import { fetchServiceById } from "@/app/lib/data";
-import {
-  CheckIcon,
-  QuestionMarkCircleIcon,
-  StarIcon,
-} from "@heroicons/react/20/solid";
+import { StarIcon } from "@heroicons/react/20/solid";
 import { ShieldCheckIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { createCheckoutSessionFromProductPage } from "@/app/lib/actions";
+import ScheduleInput from "../../ui/schedule-input";
 
 const reviews = { average: 4, totalCount: 1624 };
 
@@ -16,6 +14,15 @@ export default async function Example({ params }: { params: { id: string } }) {
   if (!service) {
     notFound();
   }
+
+  const createCheckoutSessionBinded = createCheckoutSessionFromProductPage.bind(
+    null,
+    {
+      service_uuid: service.uuid,
+      stripe_price_id: service.stripe_price_id!,
+    }
+  );
+
   const breadcrumbs = [
     { id: 1, name: "Serviços", href: "/product" },
     { id: 2, name: service.name, href: `/product/${params.id}` },
@@ -119,13 +126,20 @@ export default async function Example({ params }: { params: { id: string } }) {
               Product options
             </h2>
 
-            <form>
-              <div className="mt-10">
+            <form action={createCheckoutSessionBinded}>
+              <ScheduleInput />
+              <div className="mt-10 flex gap-4">
                 <button
-                  type="submit"
+                  type="button"
                   className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
-                  Adicionar no carrinho
+                  Adicionar ao carrinho
+                </button>
+                <button
+                  type="submit"
+                  className="flex w-fit items-center justify-center rounded-md border border-transparent bg-indigo-50 px-8 py-3 text-base font-medium  whitespace-nowrap text-indigo-700 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                >
+                  Pagar Agora
                 </button>
               </div>
               <div className="mt-6 text-center">

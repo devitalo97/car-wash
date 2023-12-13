@@ -41,150 +41,25 @@ export async function fetchServiceById(uuid: string): Promise<Service> {
 }
 
 
-const servicesObject: { [x: string]: Service } = {
-  "1": {
-    uuid: "1",
-    name: "Lavagem e Higienização Completa",
-    created_at: new Date().toISOString(),
-    price: 220,
-    description:
-      "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[0] as unknown as string,
-    imageAlt:
-      "Model wearing light green backpack with black canvas straps and front zipper pouch.",
-  },
-  "2": {
-    uuid: "2",
-    name: "Pintura automotiva",
-    price: 220,
-    created_at: new Date().toISOString(),
-    description:
-      "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[1] as unknown as string,
-    imageAlt:
-      "Model wearing light green backpack with black canvas straps and front zipper pouch.",
-  },
-  "3": {
-    uuid: "3",
-    name: "Limpeza de tapetes",
-    price: 70,
-    created_at: new Date().toISOString(),
-    description:
-      "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[2] as unknown as string,
-    imageAlt:
-      "Model wearing light green backpack with black canvas straps and front zipper pouch.",
-  },
-  "4": {
-    uuid: "4",
-    name: "Limpeza de estofados",
-    price: 70,
-    created_at: new Date().toISOString(),
-    description:
-      "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[3] as unknown as string,
-    imageAlt:
-      "Model wearing light green backpack with black canvas straps and front zipper pouch.",
-  },
-  "5": {
-    uuid: "5",
-    name: "Limpeza de Rodas e Pneus",
-    price: 70,
-    created_at: new Date().toISOString(),
-    description:
-      "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[4] as unknown as string,
-    imageAlt:
-      "Model wearing light green backpack with black canvas straps and front zipper pouch.",
-  },
-  "6": {
-    uuid: "6",
-    name: "Limpeza interna",
-    created_at: new Date().toISOString(),
-    price: 70,
-    description:
-      "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[5] as unknown as string,
-    imageAlt:
-      "Model wearing light green backpack with black canvas straps and front zipper pouch.",
-  },
-  "7": {
-    uuid: "7",
-    name: "Limpeza Externa",
-    created_at: new Date().toISOString(),
-    price: 70,
-    description:
-      "Don't compromise on snack-carrying capacity with this lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries, biscuits, crackers, and cookies secure.",
-    imageSrc: home[6] as unknown as string,
-    imageAlt:
-      "Model wearing light green backpack with black canvas straps and front zipper pouch.",
-  }
-}
-
-
-
 //ORDER ==================================================================================
-//
-export async function fetchOrders(query: string, currentPage: number): Promise<OrderQueryResult[]> {
-  noStore()
-  await new Promise<void>((resolve) => setTimeout(resolve, 800))
-  return [...Object.values(ordersObject), ...Object.values(ordersObject)].map(order => ({
-    ...order,
-    service_uuid: servicesObject["1"],
-    user_uuid: usersObject["1"],
-    schedule_uuid: {} as Schedule
-  })).filter(el => el.user_uuid.name.toLocaleLowerCase().includes(query.toLocaleLowerCase()))
+export async function createOneOrder(order: Order): Promise<Order> {
+  await (await clientPromise).db("car-wash").collection("order").insertOne(order)
+  return order
 }
-export async function fetchOrderByUUID(uuid: string): Promise<Order> {
-  noStore()
-  return ordersObject[uuid]
+export async function fetchOrders(): Promise<Order[]> {
+  await new Promise<void>((resolve) => setTimeout(resolve, 800))
+  return await (await clientPromise).db("car-wash").collection("order").aggregate([
+    {
+      $match: {}
+    }]).toArray() as Order[]
+}
+export async function fetchOrderById(uuid: string): Promise<Order> {
+  const order = await (await clientPromise).db("car-wash").collection("order").findOne({ uuid })
+  return order as unknown as Order
 }
 
-const ordersObject: { [x: string]: Order } = {
-  "1": {
-    uuid: "1",
-    service_uuid: "1",
-    schedule_uuid: "1",
-    user_uuid: "1",
-    status: "pending",
-    delivery: {
-      with: true,
-      location: "Rua 14, numero 768"
-    }
-  },
-  "2": {
-    uuid: "1",
-    service_uuid: "1",
-    schedule_uuid: "1",
-    status: "paid",
-    user_uuid: "1",
-    delivery: {
-      with: true,
-      location: "Rua 14, numero 768"
-    }
-  },
-  "3": {
-    uuid: "1",
-    service_uuid: "1",
-    schedule_uuid: "1",
-    status: "paid",
-    user_uuid: "1",
-    delivery: {
-      with: true,
-      location: "Rua 17, numero 55"
-    }
-  },
-  "4": {
-    uuid: "1",
-    service_uuid: "1",
-    schedule_uuid: "1",
-    status: "pending",
-    user_uuid: "1",
-    delivery: {
-      with: true,
-      location: "Rua 35, numero 99"
-    }
-  },
+export async function updateOneOrderStatusByStripeSessionId(stripe_session_id: string, status: string | null) {
+  await (await clientPromise).db("car-wash").collection("order").updateOne({ stripe_session_id: stripe_session_id }, { $set: { status: status } })
 }
 
 //SCHEDULE ===============================================================================
@@ -195,6 +70,10 @@ export async function fetchSchedules(): Promise<Schedule[]> {
   return await (await clientPromise).db("car-wash").collection("schedule").aggregate([
     {
       $match: {}
+    }, {
+      $project: {
+        _id: 0
+      }
     }]).toArray() as Schedule[]
 }
 export async function createOneSchedule(schedule: Schedule): Promise<Schedule> {
@@ -218,7 +97,7 @@ export async function updateOneSchedule(id: string, schedule: Partial<Schedule>)
 //
 export async function fetchUserByEmail(email: string): Promise<User | undefined> {
   try {
-    const user = await (await clientPromise).db("car-wash").collection("user").findOne({ email })
+    const user = await (await clientPromise).db("car-wash").collection("users").findOne({ email })
     return user as unknown as User;
   } catch (error) {
     throw new Error('Failed to fetch user.');
@@ -236,52 +115,18 @@ export async function fetchFilteredClients(query: string, currentPage: number): 
       }
     }]).toArray()) as User[]
 }
-
-
-const usersObject: { [x: string]: User } = {
-  "1": {
-    uuid: "1",
-    name: "Client#00",
-    password: "Client#00",
-    role: "client",
-    email: 'client00@mail.com',
-    created_at: new Date(),
-    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    orders_uuid: ["1"],
-  },
-  "2": {
-    uuid: "2",
-    name: "Client#01",
-    password: "Client#01",
-    role: "client",
-    email: 'client01@mail.com',
-    created_at: new Date(),
-    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
-  "3": {
-    uuid: "3",
-    name: "Client#02",
-    password: "Client#02",
-    role: "client",
-    email: 'client02@mail.com',
-    created_at: new Date(),
-    avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  },
+export async function createOneUser(user: User): Promise<User> {
+  await (await clientPromise).db("car-wash").collection("users").insertOne(user)
+  return user
 }
 
-
-export type OrderQueryResult = {
-  uuid: string
-  service_uuid: Service
-  schedule_uuid: Schedule
-  user_uuid: User
-  status: 'pending' | 'paid'
-  delivery: {
-    with: boolean
-    location?: string
-  }
+export async function createOneUserByEmail(email: string, user: Partial<User>): Promise<void> {
+  await (await clientPromise).db("car-wash").collection("users").updateOne({ email }, { $set: user })
 }
 
+export async function pushOrderOnUserByUUID(uuid: string, orders_uuid: string[]): Promise<void> {
+  await (await clientPromise).db("car-wash").collection("users").updateOne({ uuid }, { $addToSet: { orders_uuid: { $each: orders_uuid } } })
+}
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 

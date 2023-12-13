@@ -1,14 +1,15 @@
 'use server';
 
 import { z } from 'zod';
-import { createOneSchedule, createOneService, createStripePrice, createStripeProductAndPrice, deactivateStripePrice, deactivateStripeProduct, deleteOneSchedule, deleteOneService, fetchServiceById, fetchServices, updateOneSchedule, updateOneService, updateStripeProduct } from './data';
+import { createOneOrder, createOneSchedule, createOneService, createOneUser, createOneUserByEmail, createStripePrice, createStripeProductAndPrice, deactivateStripePrice, deactivateStripeProduct, deleteOneSchedule, deleteOneService, fetchServiceById, fetchServices, fetchUserByEmail, pushOrderOnUserByUUID, updateOneOrderStatusByStripeSessionId, updateOneSchedule, updateOneService, updateStripeProduct } from './data';
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache';
 import { uploadFile } from './firebase';
 import { redirect } from 'next/navigation';
-import { signIn, signOut } from '@/auth';
+import { auth, signIn, signOut } from '@/auth';
 import Stripe from 'stripe'
-import { Service } from './definitions';
+import { Order, Service } from './definitions';
+import bcrypt from 'bcrypt'
 
 const CreateServiceFormSchema = z.object({
   uuid: z.string(),
@@ -173,7 +174,7 @@ export async function updateSchedule(id: string, formData: FormData) {
 
 
 
-export async function adminAuthenticate(formData: FormData) {
+export async function credentialAuthentication(formData: FormData) {
   try {
     await signIn('credentials', Object.fromEntries(formData));
   } catch (error) {
@@ -181,9 +182,9 @@ export async function adminAuthenticate(formData: FormData) {
   }
 }
 
-export async function clientAuthenticate() {
+export async function googleAuthentication() {
   try {
-    await signIn('google');
+    await signIn('google', {});
   } catch (error) {
     throw error;
   }
@@ -197,41 +198,115 @@ export async function logout() {
   }
 }
 
+const CreateCheckoutSessionFormSchema = z.object({
+  schedule_uuid: z.string(),
+});
+
+type createCheckoutSessionParameters = {
+  stripe_price_id: string
+  service_uuid: string
+}
 
 //STRIPE PAYMENT ==========================================================================
-export async function createCheckoutSession() {
-  let session: Stripe.Checkout.Session
+export async function createCheckoutSessionFromProductPage(parameters: createCheckoutSessionParameters, formData: FormData) {
+  const auth_session = await auth()
+  const data: Partial<{ stripe_price_id: string } & Order> = Object.fromEntries(formData.entries())
+  const { schedule_uuid } = CreateCheckoutSessionFormSchema.parse(data);
+  let chechout_session: Stripe.Checkout.Session
+  const uuid = uuidv4()
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-    session = await stripe.checkout.sessions.create({
+    chechout_session = await stripe.checkout.sessions.create({
       ui_mode: 'embedded',
       line_items: [
         {
-          price: 'price_1OLyuhD14M5JnKfeLS9WhlCM',
+          price: parameters.stripe_price_id,
           quantity: 1,
         },
       ],
       mode: 'payment',
-      return_url: `${process.env.URL}/stripe/return?session_id={CHECKOUT_SESSION_ID}`,
+      return_url: `${process.env.URL}/stripe/return?session_id={CHECKOUT_SESSION_ID}${!auth_session ? "&guest=0" : "&guest=1"}&order_uuid=${uuid}`,
+      customer_email: auth_session?.user.email ?? undefined,
+      metadata: {
+        guest: Number(Boolean(!!auth_session))
+      }
     });
+    await createOneOrder({
+      uuid,
+      ...parameters,
+      schedule_uuid,
+      status: "pending",
+      stripe_session_id: chechout_session.id
+    })
   } catch (error) {
     console.error(error)
     throw error
   }
-  redirect(`/stripe/checkout?secret=${session.client_secret}`)
+  redirect(`/stripe/checkout?secret=${chechout_session.client_secret}`)
 }
 
 export async function retriveCheckoutSession(formData: FormData) {
   const session_id = formData.get("session_id") as string
+  const order_uuid = formData.get("order_uuid") as string
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
   const session = await stripe.checkout.sessions.retrieve(session_id);
+  await updateOneOrderStatusByStripeSessionId(session_id, session.status)
+  if (Number(Boolean(session.metadata!.guest))) {
+    //previnir criação de multiplos user no refresh da pagina de return do pagamento
+    const userExists = await fetchUserByEmail(session?.customer_details?.email!)
+    if (userExists) {
+      await pushOrderOnUserByUUID(userExists.uuid, [order_uuid])
+      return {
+        status: session.status,
+        customer_details: session?.customer_details,
+        user: userExists
+      }
+    }
+    const user = {
+      email: session.customer_details?.email!,
+      uuid: uuidv4(),
+      created_at: new Date(),
+      role: "guest",
+      orders_uuid: [order_uuid]
+    }
+    await createOneUser(user)
+    return {
+      status: session.status,
+      customer_details: session?.customer_details,
+      user
+    }
+  }
   return {
     status: session.status,
-    customer_details: session?.customer_details
+    customer_details: session?.customer_details,
   }
 }
 
-
+const CreateUserFormSchema = z.object({
+  email: z.string(),
+  password: z.string(),
+});
+type RegisterOptions = {
+  guest: boolean
+}
+//USER
+export async function registerUser(options: RegisterOptions, formData: FormData) {
+  const data = Object.fromEntries(formData.entries())
+  const { email, password } = CreateUserFormSchema.parse(data);
+  const user = {
+    uuid: uuidv4(),
+    email: email,
+    password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
+    role: "client",
+    created_at: new Date(),
+  }
+  if (options.guest) {
+    await createOneUserByEmail(user.email, { role: "client", password: user.password })
+    redirect("/login")
+  }
+  await createOneUser(user)
+  redirect("/login")
+}
 
 
 

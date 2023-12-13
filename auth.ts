@@ -20,8 +20,8 @@ export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
         if (parsedCredentials.success) {
           const { email, password } = parsedCredentials.data;
           const user = await fetchUserByEmail(email);
-          if (!user) return null;
-          const passwordsMatch = await bcrypt.compare(password, user.password);
+          if (!user || !user?.password) return null;
+          const passwordsMatch = await bcrypt.compare(password, user?.password);
           if (passwordsMatch) return user as unknown as User;
         }
         return null;

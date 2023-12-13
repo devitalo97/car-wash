@@ -4,14 +4,8 @@ import Link from "next/link";
 import ListMenu from "@/app/ui/list-menu";
 import { fetchOrders } from "@/app/lib/data";
 
-export default async function OrderList({
-  query,
-  currentPage,
-}: {
-  query: string;
-  currentPage: number;
-}) {
-  const orders = await fetchOrders(query, currentPage);
+export default async function OrderList() {
+  const orders = await fetchOrders();
   if (!orders || orders.length === 0) {
     return <p className="mt-4 text-gray-400">No data available.</p>;
   }
@@ -44,29 +38,13 @@ export default async function OrderList({
                 </div>
                 <h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
                   <Link href={`/order/${order.uuid}`} className="flex gap-x-2">
-                    <span className="truncate">{order.service_uuid.name}</span>
+                    <span className="truncate">{order.service_uuid}</span>
                     <span className="text-gray-400">/</span>
-                    <span className="whitespace-nowrap">
-                      {order.user_uuid.name}
-                    </span>
+                    <span className="whitespace-nowrap">{order.user_uuid}</span>
                     <span className="absolute inset-0" />
                   </Link>
                 </h2>
               </div>
-              {order.delivery.with ? (
-                <div className="mt-3 flex items-center gap-x-2.5 text-xs leading-5 text-gray-400">
-                  <p className="truncate">{order.delivery.location}</p>
-                  <svg
-                    viewBox="0 0 2 2"
-                    className="h-0.5 w-0.5 flex-none fill-gray-300"
-                  >
-                    <circle cx={1} cy={1} r={1} />
-                  </svg>
-                  <p className="whitespace-nowrap">
-                    {devileryMapped[String(order.delivery.with)]}
-                  </p>
-                </div>
-              ) : null}
             </div>
             <div
               className={clsx(
@@ -89,20 +67,15 @@ export default async function OrderList({
 
 const statusInsightStyle: { [x: string]: string } = {
   pending: "text-gray-500 bg-gray-100/10",
-  paid: "text-green-400 bg-green-400/10",
+  complete: "text-green-400 bg-green-400/10",
 };
 
 const statusBadgeStyle: { [x: string]: string } = {
   pending: "text-gray-400 bg-gray-400/10 ring-gray-400/20",
-  paid: "text-green-400 bg-green-400/10 ring-green-400/30",
+  complete: "text-green-400 bg-green-400/10 ring-green-400/30",
 };
 
 const statusTitleMapped: { [x: string]: string } = {
   pending: "Pendente",
-  paid: "Pago",
-};
-
-const devileryMapped: { [x: string]: string } = {
-  true: "M&M Delivery",
-  false: "",
+  complete: "Pago",
 };
