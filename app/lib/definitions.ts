@@ -22,12 +22,12 @@ export type Order = {
 
 export type User = {
   uuid: string
-  name: string
-  password: string
   email: string
-  avatar: string
   role: string
   created_at: Date
+  name?: string
+  password?: string
+  avatar?: string
   orders_uuid?: string[]
 }
 
