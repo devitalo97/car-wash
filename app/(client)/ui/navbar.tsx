@@ -34,12 +34,12 @@ export default async function NavBar() {
                 <LoginButton isLoggedIn={isLoggedIn} />
                 <span className="h-6 w-px bg-gray-200" aria-hidden="true" />
                 {!isLoggedIn && (
-                  <a
-                    href="#"
+                  <Link
+                    href="/register"
                     className="text-sm font-medium text-gray-700 hover:text-gray-800"
                   >
                     Criar conta
-                  </a>
+                  </Link>
                 )}
               </div>
 

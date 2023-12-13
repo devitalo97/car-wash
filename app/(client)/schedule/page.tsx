@@ -109,15 +109,19 @@ export default function Example() {
             </h2>
 
             <form>
-              <div className="mt-10 flex flex-col gap-4">
-                <Suspense key={2} fallback={<div>loading</div>}>
-                  <ScheduleInput />
-                </Suspense>
+              <ScheduleInput />
+              <div className="mt-10 flex gap-4">
                 <button
-                  type="submit"
+                  type="button"
                   className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                 >
-                  Adicionar no carrinho
+                  Adicionar ao carrinho
+                </button>
+                <button
+                  type="submit"
+                  className="flex w-fit items-center justify-center rounded-md border border-transparent bg-indigo-50 px-8 py-3 text-base font-medium  whitespace-nowrap text-indigo-700 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                >
+                  Pagar Agora
                 </button>
               </div>
               <div className="mt-6 text-center">
@@ -127,7 +131,7 @@ export default function Example() {
                     aria-hidden="true"
                   />
                   <span className="text-gray-500 hover:text-gray-700">
-                    Garantia na realização do serviço
+                    Garantia na execução do serviço
                   </span>
                 </a>
               </div>
