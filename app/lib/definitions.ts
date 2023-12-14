@@ -45,10 +45,13 @@ export type Order = {
   total: number
   user_uuid?: string
   artfacts: OrderArtfact[]
+  created_at: Date
+  protocol: string
 }
 
 type OrderArtfact = {
   service_uuid: string
+  service_price: number
   scheduladable_metadata?: Record<string, string>
   shippable_metadata?: Record<string, string>
 }

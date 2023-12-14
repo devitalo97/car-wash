@@ -9,6 +9,7 @@ import { auth, signIn, signOut } from '@/auth';
 import Stripe from 'stripe'
 import { Order, Service } from './definitions';
 import bcrypt from 'bcrypt'
+import { createProtocol } from '../utils/createProtocol';
 
 const CreateServiceFormSchema = z.object({
   uuid: z.string(),
@@ -247,15 +248,20 @@ export async function createCheckoutSessionFromProductPage(parameters: createChe
         guest: Number(Boolean(!!auth_session))
       }
     });
+    const created_at = new Date()
+    const protocol = createProtocol(created_at)
     await createOneOrder({
       uuid,
       status: "pending",
       stripe_session_id: chechout_session.id,
+      total: parameters.service_price,
+      created_at,
+      protocol,
       artfacts: [{
         service_uuid: parameters.service_uuid,
+        service_price: parameters.service_price,
         scheduladable_metadata: { schedule_uuid }
       }],
-      total: parameters.service_price
     })
   } catch (error) {
     console.error(error)
