@@ -19,6 +19,7 @@ export default async function Example({ params }: { params: { id: string } }) {
     null,
     {
       service_uuid: service.uuid,
+      service_price: service.price,
       stripe_price_id: service.stripe_price_id!,
     }
   );
@@ -112,8 +113,8 @@ export default async function Example({ params }: { params: { id: string } }) {
         <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
           <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg">
             <img
-              src={service.imageSrc}
-              alt={service.imageAlt}
+              src={service.images[0].source}
+              alt={`Image alt for ${service.images[0].name}`}
               className="h-full w-full object-cover object-center"
             />
           </div>

@@ -31,8 +31,8 @@ export default async function Example() {
                   >
                     <div className="aspect-h-4 aspect-w-3 bg-gray-200 sm:aspect-none group-hover:opacity-75 sm:h-96">
                       <img
-                        src={product.imageSrc}
-                        alt={product.imageAlt}
+                        src={product.images[0].source}
+                        alt={`Image alt for ${product.images[0].name}`}
                         className="h-full w-full object-cover object-center sm:h-full sm:w-full"
                       />
                     </div>
