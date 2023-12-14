@@ -3,9 +3,11 @@
 import Input from "@/app/ui/input";
 import Textarea from "@/app/ui/textarea";
 import Button from "@/app/ui/button";
-import { PhotoIcon } from "@heroicons/react/24/outline";
 import { Service } from "@/app/lib/definitions";
 import { useServiceUpdateForm } from "./useServiceUpdateForm";
+import { Controller } from "react-hook-form";
+import { FileInput } from "@/app/ui/file-upload";
+import GalleryInput from "@/app/ui/gallery-input";
 
 interface Props {
   updateService: (formData: FormData) => Promise<void>;
@@ -13,7 +15,7 @@ interface Props {
 }
 
 export default function ServiceUpdateForm({ updateService, service }: Props) {
-  const { errors, register, handleSubmit } = useServiceUpdateForm({
+  const { errors, register, handleSubmit, control } = useServiceUpdateForm({
     updateService,
     service,
   });
@@ -50,43 +52,34 @@ export default function ServiceUpdateForm({ updateService, service }: Props) {
               />
             </div>
           </div>
-          <div className="border-b border-gray-900/10">
-            <div className="flex flex-col gap-4">
-              <div className="col-span-full">
-                <label
-                  htmlFor="cover-photo"
-                  className="block text-sm font-medium leading-6 text-white"
-                >
-                  Imagens
-                </label>
-                <div className="mt-2 flex justify-center rounded-lg border border-dashed border-white/25 px-6 py-4">
-                  <div className="text-center">
-                    <PhotoIcon
-                      className="mx-auto h-12 w-12 text-gray-300"
-                      aria-hidden="true"
-                    />
-                    <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                      <label
-                        htmlFor="file-upload"
-                        className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
-                      >
-                        <span>Upload a file</span>
-                        <input
-                          id="file-upload"
-                          name="file_upload"
-                          type="file"
-                          className="sr-only"
-                        />
-                      </label>
-                      <p className="pl-1">or drag and drop</p>
-                    </div>
-                    <p className="text-xs leading-5 text-gray-600">
-                      PNG, JPG, GIF up to 10MB
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div>
+            <Controller
+              control={control}
+              name="old_upload"
+              render={({ field }) => (
+                <GalleryInput
+                  label="Imanges Atuais"
+                  images={field.value.map((item) => ({
+                    title: item.name,
+                    size: `${item.size / 1000000} MB`,
+                    source: item.source,
+                  }))}
+                />
+              )}
+            />
+          </div>
+          <div>
+            <Controller
+              control={control}
+              name="file_upload"
+              render={({ field }) => (
+                <FileInput
+                  id="file_upload"
+                  label="Novas imagens"
+                  onChange={field.onChange}
+                />
+              )}
+            />
           </div>
         </div>
 
