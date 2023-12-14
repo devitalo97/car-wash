@@ -66,8 +66,38 @@ export async function fetchOrders(): Promise<Order[]> {
       }
     }]).toArray() as Order[]
 }
+export async function fetchOrdersWithServices(): Promise<(Order & { services: Service[] })[]> {
+  await new Promise<void>((resolve) => setTimeout(resolve, 800))
+  return await (await clientPromise).db("car-wash").collection("order").aggregate([
+    {
+      $match: {}
+    },
+    {
+      $lookup: {
+        from: "service",
+        localField: "artfacts.service_uuid",
+        foreignField: "uuid",
+        as: "services"
+      }
+    },
+    {
+      $project: {
+        _id: 0
+      }
+    }
+  ]).toArray() as (Order & { services: Service[] })[]
+}
 export async function fetchOrderById(uuid: string): Promise<Order> {
-  const order = await (await clientPromise).db("car-wash").collection("order").findOne({ uuid })
+  const order = await (await clientPromise).db("car-wash").collection("order").aggregate([
+    { $match: uuid },
+    {
+      $lookup: {
+        from: "service",
+        localField: "artifacts.service_uuid",
+        foreignField: "uuid",
+        as: "services"
+      }
+    }]).toArray()
   return order as unknown as Order
 }
 
