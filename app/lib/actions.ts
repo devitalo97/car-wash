@@ -1,10 +1,9 @@
 'use server';
 
 import { z } from 'zod';
-import { createOneOrder, createOneSchedule, createOneService, createOneUser, createOneUserByEmail, createStripePrice, createStripeProductAndPrice, deactivateStripePrice, deactivateStripeProduct, deleteOneSchedule, deleteOneService, fetchServiceById, fetchServices, fetchUserByEmail, pushOrderOnUserByUUID, updateOneOrderStatusByStripeSessionId, updateOneSchedule, updateOneService, updateStripeProduct } from './data';
+import { createOneOrder, createOneSchedule, createOneService, createOneUser, createOneUserByEmail, createStripePrice, createStripeProductAndPrice, deactivateStripePrice, deactivateStripeProduct, deleteOneSchedule, deleteOneService, fetchServiceById, fetchUserByEmail, pushOrderOnUserByUUID, s3Upload, updateOneOrderStatusByStripeSessionId, updateOneSchedule, updateOneService, updateStripeProduct } from './data';
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache';
-import { uploadFile } from './firebase';
 import { redirect } from 'next/navigation';
 import { auth, signIn, signOut } from '@/auth';
 import Stripe from 'stripe'
@@ -17,16 +16,15 @@ const CreateServiceFormSchema = z.object({
   price: z.coerce.number(),
   description: z.string(),
   created_at: z.string(),
+  file_upload: z.any()
 });
 const CreateService = CreateServiceFormSchema.omit({ uuid: true, created_at: true });
 
 export async function createService(formData: FormData) {
-  const { file_upload, ...rest } = Object.fromEntries(formData.entries())
-  const file = file_upload as File
-  const bytes = await file.arrayBuffer()
-  const buffer = Buffer.from(bytes);
-  const imageSrc: any = await uploadFile({ buffer, name: file.name })
-  const { name, price, description } = CreateService.parse(rest);
+  const formDataValue = Object.fromEntries(formData.entries())
+  const files = Object.entries(formDataValue).filter(([key]) => key.includes("file_upload")).map(([, value]) => value)
+  const filesUploaded = await uploadFileInS3(files as File[])
+  const { name, price, description } = CreateService.parse(formDataValue);
   const priceInCents = price * 100;
   const created_at = new Date().toISOString()
   const uuid = uuidv4()
@@ -36,8 +34,7 @@ export async function createService(formData: FormData) {
     description,
     uuid,
     created_at,
-    imageSrc,
-    imageAlt: file.name,
+    images: filesUploaded,
     metadata: {
       scheduladable: true
     },
@@ -60,45 +57,60 @@ export async function createService(formData: FormData) {
   revalidatePath('/dashboard/services')
 }
 
+
+const UpdateServiceFormSchema = z.object({
+  name: z.string(),
+  price: z.coerce.number(),
+  description: z.string(),
+  file_upload: z.any(),
+  old_upload: z.any()
+});
 export async function updateService(id: string, formData: FormData) {
+  console.log(formData)
   const oldSerivce = await fetchServiceById(id)
-  const { file_upload, ...rest } = Object.fromEntries(formData.entries())
-  const file = file_upload as File
-  const bytes = await file.arrayBuffer()
-  const buffer = Buffer.from(bytes);
-  let imageSrc
-  try {
-    imageSrc = await uploadFile({ buffer, name: file.name })
-  } catch (e) {
-    throw new Error((e as Error).message);
-  }
-  const { name, price, description } = CreateService.parse(rest);
+  const formDataValue = Object.fromEntries(formData.entries())
+  //upload de novas imanges
+
+  const files = Object.entries(formDataValue).filter(([key]) => key.includes("file_upload")).map(([, value]) => value)
+  const filesUploaded = await uploadFileInS3(files as File[])
+
+  const oldUpload = Object.entries(formDataValue).filter(([key]) => key.includes("old_upload")).map(([, value]) => value) as unknown as UploadFileInS3Output[]
+
+  console.log('filesUploaded', filesUploaded)
+  console.log('oldUpload', oldUpload)
+
+
+  //validando e montando o objeto do service
+  const { name, price, description } = UpdateServiceFormSchema.parse(formDataValue);
   const priceInCents = price * 100;
   const service = {
     name,
     price: priceInCents,
     description,
-    imageSrc,
-    imageAlt: file.name
+    images: [...filesUploaded, ...oldUpload],
   }
+
+  //atualizar preço no stripe se o preço mudou
   let stripe_price
-  try {
-    [stripe_price] = await Promise.all([
-      createStripePrice(oldSerivce.stripe_product_id!, priceInCents),
-      deactivateStripePrice(oldSerivce.stripe_price_id!)
-    ])
-  } catch (e) {
-    throw new Error((e as Error).message);
-  }
-  try {
-    await updateStripeProduct(oldSerivce.stripe_product_id!, service as Service)
-  } catch (e) {
-    throw new Error((e as Error).message);
+  if (priceInCents !== oldSerivce.price) {
+    try {
+      [stripe_price] = await Promise.all([
+        createStripePrice(oldSerivce.stripe_product_id!, priceInCents),
+        deactivateStripePrice(oldSerivce.stripe_price_id!)
+      ])
+    } catch (e) {
+      throw new Error((e as Error).message);
+    }
+    try {
+      await updateStripeProduct(oldSerivce.stripe_product_id!, service as Service)
+    } catch (e) {
+      throw new Error((e as Error).message);
+    }
   }
   try {
     await updateOneService(id, {
       ...service,
-      stripe_price_id: stripe_price.id
+      stripe_price_id: stripe_price?.id ?? oldSerivce.stripe_price_id
     })
   } catch (error) {
     throw error
@@ -311,6 +323,29 @@ export async function registerUser(options: RegisterOptions, formData: FormData)
   }
   await createOneUser(user)
   redirect("/login")
+}
+
+
+
+type UploadFileInS3Output = {
+  source: string
+  name: string
+  size: number
+  type: string
+}
+export async function uploadFileInS3(files: File[]): Promise<UploadFileInS3Output[]> {
+  const _files = []
+  for (let f = 0; f < files.length; f++) {
+    const bytes = await files[f].arrayBuffer()
+    const buffer = Buffer.from(bytes);
+    _files.push({
+      name: files[f].name,
+      type: files[f].type,
+      size: files[f].size,
+      body: buffer
+    })
+  }
+  return await s3Upload(_files)
 }
 
 
