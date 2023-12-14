@@ -6,19 +6,52 @@ export type Service = {
   created_at: string
   imageSrc: string
   imageAlt: string
+
   stripe_product_id?: string
   stripe_price_id?: string
+  metadata: Metadata
 }
+
+type Metadata = {
+  downloadable?: boolean
+  downloadable_resource?: Record<string, string>
+
+  accessible?: boolean
+  accessible_resource?: Record<string, string>
+
+  presentable?: boolean
+  presentable_resource?: Record<string, string>
+
+  scheduladable?: boolean
+
+  shippable?: boolean
+}
+
+
+
+
+// ======================================================================
 
 
 export type Order = {
   uuid: string
-  service_uuid: string
-  schedule_uuid: string
   status: 'pending' | 'complete'
   stripe_session_id: string
+  total: number
   user_uuid?: string
+  artfacts: OrderArtfact[]
 }
+
+type OrderArtfact = {
+  uuid: string
+  scheduladable_metadata?: Record<string, string>
+  shippable_metadata?: Record<string, string>
+}
+
+
+
+
+// ======================================================================
 
 export type User = {
   uuid: string
@@ -30,6 +63,15 @@ export type User = {
   avatar?: string
   orders_uuid?: string[]
 }
+
+
+
+
+// ======================================================================
+
+
+
+
 
 export type Schedule = {
   uuid: string

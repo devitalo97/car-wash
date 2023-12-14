@@ -37,7 +37,10 @@ export async function createService(formData: FormData) {
     uuid,
     created_at,
     imageSrc,
-    imageAlt: file.name
+    imageAlt: file.name,
+    metadata: {
+      scheduladable: true
+    },
   }
   let stripe_product, stripe_price
   try {
@@ -49,7 +52,7 @@ export async function createService(formData: FormData) {
     await createOneService({
       ...service,
       stripe_price_id: stripe_price.id,
-      stripe_product_id: stripe_product.id,
+      stripe_product_id: stripe_product.id
     })
   } catch (error) {
     throw error
@@ -233,10 +236,12 @@ export async function createCheckoutSessionFromProductPage(parameters: createChe
     });
     await createOneOrder({
       uuid,
-      ...parameters,
-      schedule_uuid,
       status: "pending",
-      stripe_session_id: chechout_session.id
+      stripe_session_id: chechout_session.id,
+      artfacts: [{
+        uuid: parameters.service_uuid,
+      }],
+      total: 200
     })
   } catch (error) {
     console.error(error)
