@@ -1,8 +1,9 @@
-import { home } from "@/public/home";
-import { unstable_noStore as noStore } from 'next/cache';
 import clientPromise from "./mongodb";
 import { Order, Schedule, Service, User } from "./definitions";
 import Stripe from 'stripe'
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { s3 } from "./s3";
+import { Readable } from "stream";
 
 //SERVICE ================================================================================
 //
@@ -11,6 +12,10 @@ export async function fetchServices(): Promise<Service[]> {
   return await (await clientPromise).db("car-wash").collection("service").aggregate([
     {
       $match: {}
+    }, {
+      $project: {
+        _id: 0
+      }
     }]).toArray() as Service[]
 }
 export async function fetchFilteredServices(query: string, currentPage: number): Promise<Service[]> {
@@ -21,6 +26,10 @@ export async function fetchFilteredServices(query: string, currentPage: number):
           { name: { $regex: query, $options: 'i' } },
           { description: { $regex: query, $options: 'i' } }
         ]
+      }
+    }, {
+      $project: {
+        _id: 0
       }
     }]).toArray()) as Service[]
 }
@@ -36,7 +45,7 @@ export async function deleteOneService(id: string): Promise<Partial<void>> {
   await (await clientPromise).db("car-wash").collection("service").deleteOne({ uuid: id })
 }
 export async function fetchServiceById(uuid: string): Promise<Service> {
-  const service = await (await clientPromise).db("car-wash").collection("service").findOne({ uuid })
+  const service = await (await clientPromise).db("car-wash").collection("service").findOne({ uuid }, { projection: { _id: 0 } })
   return service as unknown as Service
 }
 
@@ -51,6 +60,10 @@ export async function fetchOrders(): Promise<Order[]> {
   return await (await clientPromise).db("car-wash").collection("order").aggregate([
     {
       $match: {}
+    }, {
+      $project: {
+        _id: 0
+      }
     }]).toArray() as Order[]
 }
 export async function fetchOrderById(uuid: string): Promise<Order> {
@@ -113,6 +126,10 @@ export async function fetchFilteredClients(query: string, currentPage: number): 
         ],
         role: "client"
       }
+    }, {
+      $project: {
+        _id: 0
+      }
     }]).toArray()) as User[]
 }
 export async function createOneUser(user: User): Promise<User> {
@@ -134,7 +151,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export async function createStripeProductAndPrice(service: Service) {
   const product = await stripe.products.create({
     name: service.name,
-    images: [service.imageSrc],
+    images: [service.images[0].source],
     description: service.description,
   });
 
@@ -169,7 +186,7 @@ export async function deactivateStripePrice(stripe_price_id: string) {
 export async function updateStripeProduct(stripe_product_id: string, service: Service) {
   const product = await stripe.products.update(stripe_product_id, {
     name: service.name,
-    images: [service.imageSrc],
+    images: [service.images[0].source],
     description: service.description,
   });
   return product
@@ -180,5 +197,42 @@ export async function deactivateStripeProduct(stripe_product_id: string) {
     active: false
   });
   return price
+}
+
+
+type S3UploadInput = {
+  name: string
+  type: string
+  size: number
+  body: string | Uint8Array | Buffer | Readable | Uint8Array | ReadableStream | Blob;
+}
+type S3UploadOutput = {
+  source: string
+  name: string
+  size: number
+  type: string
+}
+//=====================================================
+export async function s3Upload(files: S3UploadInput[]): Promise<S3UploadOutput[]> {
+  const result = await Promise.all(files.map((async file => {
+    const _type = file.type.replace("image/", "")
+    const result = await s3.send(
+      new PutObjectCommand({
+        Bucket: process.env.S3_BUCKET_NAME,
+        Key: `${process.env.S3_PUBLIC_BUCKET_DIRECTORY}${file.name}.${_type}`,
+        Body: file.body,
+      })
+    );
+    if (result.$metadata.httpStatusCode !== 200) {
+      return undefined
+    }
+    return {
+      source: `${process.env.S3_BASE_PUBLIC_BUCKET_URL}${file.name}.${_type}`,
+      name: file.name,
+      size: file.size,
+      type: file.type
+    }
+  })))
+  return result.filter(el => el !== undefined) as S3UploadOutput[]
 }
 
