@@ -4,12 +4,17 @@ export type Service = {
   price: number
   description: string
   created_at: string
-  imageSrc: string
-  imageAlt: string
-
+  images: Image[]
   stripe_product_id?: string
   stripe_price_id?: string
   metadata: Metadata
+}
+
+type Image = {
+  source: string;
+  name: string;
+  size: number;
+  type: string;
 }
 
 type Metadata = {
