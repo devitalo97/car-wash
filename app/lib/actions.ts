@@ -220,6 +220,7 @@ const CreateCheckoutSessionFormSchema = z.object({
 type createCheckoutSessionParameters = {
   stripe_price_id: string
   service_uuid: string
+  service_price: number
 }
 
 //STRIPE PAYMENT ==========================================================================
@@ -251,9 +252,10 @@ export async function createCheckoutSessionFromProductPage(parameters: createChe
       status: "pending",
       stripe_session_id: chechout_session.id,
       artfacts: [{
-        uuid: parameters.service_uuid,
+        service_uuid: parameters.service_uuid,
+        scheduladable_metadata: { schedule_uuid }
       }],
-      total: 200
+      total: parameters.service_price
     })
   } catch (error) {
     console.error(error)

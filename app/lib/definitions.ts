@@ -48,7 +48,7 @@ export type Order = {
 }
 
 type OrderArtfact = {
-  uuid: string
+  service_uuid: string
   scheduladable_metadata?: Record<string, string>
   shippable_metadata?: Record<string, string>
 }
