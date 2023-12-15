@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { fetchUserByEmail } from './app/lib/data';
 import bcrypt from 'bcrypt'
 import clientPromise from './app/lib/mongodb';
+import { v4 as uuidv4 } from "uuid"
 
 export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
   ...authConfig,
@@ -34,6 +35,7 @@ export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
       profile(profile: GoogleProfile) {
         return {
           name: profile.name,
+          uuid: uuidv4(),
           email: profile.email,
           role: "client",
           id: profile.sub,
