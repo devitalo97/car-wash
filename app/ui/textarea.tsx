@@ -16,6 +16,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, Props>(
     const id = rest?.id ?? uuidv4();
     const labelColor = dark ? "text-white" : "text-gray-900";
     const textColor = dark ? "text-white" : "text-gray-900";
+    const ring = dark ? "ring-gray-500" : "ring-gray-300";
     return (
       <div className={clsx(containerClassname)}>
         {label ? (
@@ -36,10 +37,11 @@ const Textarea = forwardRef<HTMLTextAreaElement, Props>(
             className={clsx(
               "block w-full rounded-md bg-transparent border-0 py-1.5",
               textColor,
-              "shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400",
+              "shadow-sm ring-1 ring-inset placeholder:text-gray-400",
               "focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
               error &&
-                "pr-10 text-red-900 focus:ring-red-500 ring-red-300 placeholder:text-red-300"
+                "pr-10 text-red-900 focus:ring-red-500 ring-red-300 placeholder:text-red-300",
+              dark && ring
             )}
             {...rest}
           />

@@ -2,8 +2,6 @@ import { Suspense } from "react";
 import { OrderListSkeleton } from "@/app/ui/skeletons";
 import SearchBar from "@/app/(admin)/ui/search-bar";
 import ServiceList from "@/app/(admin)/ui/service-list";
-import ServiceCreateForm from "@/app/(admin)/ui/form/service/create-form";
-import { createService } from "@/app/lib/actions";
 
 export default function Example({
   searchParams,
@@ -21,9 +19,6 @@ export default function Example({
 
       <Suspense key={query + currentPage} fallback={<OrderListSkeleton />}>
         <ServiceList query={query} currentPage={currentPage} />
-      </Suspense>
-      <Suspense fallback={<div>loading</div>}>
-        <ServiceCreateForm createService={createService} />
       </Suspense>
     </div>
   );

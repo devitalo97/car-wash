@@ -192,6 +192,16 @@ export async function fetchUserByEmail(email: string): Promise<User | undefined>
     throw new Error('Failed to fetch user.');
   }
 }
+
+export async function fetchUserByUUID(uuid: string): Promise<User | undefined> {
+  try {
+    const user = await (await clientPromise).db("car-wash").collection("users").findOne({ uuid })
+    return user as unknown as User;
+  } catch (error) {
+    throw new Error('Failed to fetch user.');
+  }
+}
+
 export async function fetchFilteredClients(query: string, currentPage: number): Promise<User[]> {
   return (await (await clientPromise).db("car-wash").collection("users").aggregate([
     {

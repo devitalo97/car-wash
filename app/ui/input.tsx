@@ -21,6 +21,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
     const id = rest?.id ?? uuidv4();
     const labelColor = dark ? "text-white" : "text-gray-900";
     const inputColor = dark ? "text-white" : "text-gray-900";
+    const ring = dark ? "ring-gray-500" : "ring-gray-300";
     return (
       <div className={clsx(containerClassname)}>
         {label ? (
@@ -32,7 +33,12 @@ const Input = forwardRef<HTMLInputElement, Props>(
           </label>
         ) : null}
         <div className="relative mt-2 rounded-md shadow-sm">
-          <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+          <div
+            className={clsx(
+              "flex rounded-md shadow-sm ring-1 ring-inset  focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md",
+              dark && ring
+            )}
+          >
             {addOn && addOn}
             <input
               ref={ref}

@@ -77,7 +77,7 @@ type OrderArtfact = {
 export type User = {
   uuid: string
   email: string
-  role: string
+  role: "client" | "guest" | "admin"
   created_at: Date
   name?: string
   password?: string
