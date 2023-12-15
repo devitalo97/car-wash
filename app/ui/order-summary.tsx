@@ -6,6 +6,7 @@ import {
   CreditCardIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
+import clsx from "clsx";
 
 export default function OrderSummary({
   value,
@@ -13,23 +14,42 @@ export default function OrderSummary({
   date,
   user,
   pay_with,
+  dark = false,
 }: {
   value: number;
   status: Order["status"];
   date: Date;
   user: string;
   pay_with: Order["pay_with"];
+  dark?: boolean;
 }) {
+  const bgDark = "bg-gray-900 bg-black/10 ring-1 ring-white/5";
+  const textDark = "text-white";
   return (
     <div>
       <h2 className="sr-only">Resumo</h2>
-      <div className="rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5">
+      <div
+        className={clsx(
+          "rounded-lg bg-gray-50 shadow-sm ring-1 ring-gray-900/5",
+          dark && bgDark
+        )}
+      >
         <dl className="flex flex-wrap">
           <div className="flex-auto pl-6 pt-6">
-            <dt className="text-sm font-semibold leading-6 text-gray-900">
+            <dt
+              className={clsx(
+                "text-sm font-semibold leading-6 text-gray-900",
+                dark && textDark
+              )}
+            >
               Valor
             </dt>
-            <dd className="mt-1 text-base font-semibold leading-6 text-gray-900">
+            <dd
+              className={clsx(
+                "mt-1 text-base font-semibold leading-6 text-gray-900",
+                dark && textDark
+              )}
+            >
               {formatPriceFromCents(value)}
             </dd>
           </div>
@@ -45,7 +65,12 @@ export default function OrderSummary({
                 aria-hidden="true"
               />
             </dt>
-            <dd className="text-sm font-medium leading-6 text-gray-900">
+            <dd
+              className={clsx(
+                "text-sm font-medium leading-6 text-gray-900",
+                dark && textDark
+              )}
+            >
               {user}
             </dd>
           </div>
@@ -74,8 +99,23 @@ export default function OrderSummary({
             </dd>
           </div>
         </dl>
-        <div className="mt-6 border-t border-gray-900/5 px-6 py-6">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+        <div className="mt-6 border-t border-gray-900/5 px-6 py-6 flex justify-between">
+          <a
+            href="#"
+            className={clsx(
+              "text-sm font-semibold leading-6 text-gray-900",
+              textDark
+            )}
+          >
+            Manipular
+          </a>
+          <a
+            href="#"
+            className={clsx(
+              "text-sm font-semibold leading-6 text-gray-900",
+              textDark
+            )}
+          >
             Baixar recibo <span aria-hidden="true">&rarr;</span>
           </a>
         </div>

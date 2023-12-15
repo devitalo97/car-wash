@@ -1,6 +1,16 @@
 "use client";
 
-export default function OrderHeader({ protocol }: { protocol: string }) {
+import clsx from "clsx";
+
+export default function OrderHeader({
+  protocol,
+  dark = false,
+}: {
+  protocol: string;
+  dark?: boolean;
+}) {
+  const textBaseDark = "font-semibold text-white";
+  const subTextDark = "text-white";
   return (
     <header className="relative isolate pt-16">
       <div
@@ -28,10 +38,20 @@ export default function OrderHeader({ protocol }: { protocol: string }) {
               className="h-16 w-16 flex-none rounded-full ring-1 ring-gray-900/10"
             />
             <h1>
-              <div className="text-sm leading-6 text-gray-500">
+              <div
+                className={clsx(
+                  "text-sm leading-6 text-gray-500",
+                  dark && textBaseDark
+                )}
+              >
                 Fatura <span className="text-gray-700">#{protocol}</span>
               </div>
-              <div className="mt-1 text-base font-semibold leading-6 text-gray-900">
+              <div
+                className={clsx(
+                  "mt-1 text-base font-semibold leading-6 text-gray-900",
+                  dark && subTextDark
+                )}
+              >
                 MMLavacar
               </div>
             </h1>

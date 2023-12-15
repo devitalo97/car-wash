@@ -1,5 +1,6 @@
 import { Order, Service } from "@/app/lib/definitions";
 import { formatPriceFromCents, formatShortDate } from "@/app/utils/formatters";
+import clsx from "clsx";
 
 const invoice = {
   subTotal: "$8,800.00",
@@ -42,8 +43,10 @@ const invoice = {
 };
 export default function OrderInvoice({
   order,
+  dark = false,
 }: {
   order: Order & { services: Service[] };
+  dark?: boolean;
 }) {
   const artfacts = order.artfacts.map((art) => ({
     ...art,
@@ -51,23 +54,41 @@ export default function OrderInvoice({
       (service) => service.uuid === art.service_uuid
     ),
   }));
+
+  const lineBottomDark = "border-white/5";
+  const textDark = "text-white";
+  const ringDark = "ring-1 ring-white/5 bg-gray-900 bg-black/10";
   return (
-    <div className="-mx-4 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14  xl:px-16 xl:pb-20 xl:pt-16">
-      <h2 className="text-base font-semibold leading-6 text-gray-900">
+    <div
+      className={clsx(
+        "-mx-4 px-4 py-8 shadow-sm ring-1 ring-gray-900/5 sm:mx-0 sm:rounded-lg sm:px-8 sm:pb-14  xl:px-16 xl:pb-20 xl:pt-16",
+        dark && ringDark
+      )}
+    >
+      <h2
+        className={clsx(
+          "text-base font-semibold leading-6 text-gray-900",
+          dark && textDark
+        )}
+      >
         Fatura
       </h2>
       <dl className="mt-6 grid grid-cols-1 text-sm leading-6 sm:grid-cols-2">
         <div className="sm:pr-4">
-          <dt className="inline text-gray-500">Emitida em</dt>{" "}
-          <dd className="inline text-gray-700">
+          <dt className={clsx("inline text-gray-500", dark && "text-gray-400")}>
+            Emitida em
+          </dt>{" "}
+          <dd className={clsx("inline text-gray-700", dark && "text-gray-500")}>
             <time dateTime={order.created_at.toString()}>
               {formatShortDate(order.created_at)}
             </time>
           </dd>
         </div>
         <div className="mt-2 sm:mt-0 sm:pl-4">
-          <dt className="inline text-gray-500">Vencimento em</dt>{" "}
-          <dd className="inline text-gray-700">
+          <dt className={clsx("inline text-gray-500", dark && "text-gray-400")}>
+            Vencimento em
+          </dt>{" "}
+          <dd className={clsx("inline text-gray-700", dark && "text-gray-500")}>
             <time dateTime={order.created_at.toString()}>
               {formatShortDate(order.created_at)}
             </time>
@@ -101,7 +122,13 @@ export default function OrderInvoice({
           <col />
           <col />
         </colgroup>
-        <thead className="border-b border-gray-200 text-gray-900">
+        <thead
+          className={clsx(
+            "border-b border-gray-200 text-gray-900",
+            dark && lineBottomDark,
+            dark && textDark
+          )}
+        >
           <tr>
             <th scope="col" className="px-0 py-3 font-semibold">
               Produtos
@@ -127,23 +154,52 @@ export default function OrderInvoice({
           {artfacts.map((art, index) => (
             <tr
               key={art.service_uuid + index}
-              className="border-b border-gray-100"
+              className={clsx(
+                "border-b border-gray-100",
+                dark && lineBottomDark,
+                dark && textDark
+              )}
             >
               <td className="max-w-0 px-0 py-5 align-top">
-                <div className="truncate font-medium text-gray-900">
+                <div
+                  className={clsx(
+                    "truncate font-medium text-gray-900",
+                    textDark
+                  )}
+                >
                   {art.service?.name}
                 </div>
-                <div className="truncate text-gray-500">
+                <div
+                  className={clsx(
+                    "truncate text-gray-500",
+                    dark && "text-gray-400"
+                  )}
+                >
                   {art.service?.description}
                 </div>
               </td>
-              <td className="hidden py-5 pl-8 pr-0 text-right align-top tabular-nums text-gray-700 sm:table-cell">
+              <td
+                className={clsx(
+                  "hidden py-5 pl-8 pr-0 text-right align-top tabular-nums text-gray-700 sm:table-cell",
+                  dark && "!text-gray-400"
+                )}
+              >
                 {art.service_quant}
               </td>
-              <td className="hidden py-5 pl-8 pr-0 text-right align-top tabular-nums text-gray-700 sm:table-cell">
+              <td
+                className={clsx(
+                  "hidden py-5 pl-8 pr-0 text-right align-top tabular-nums text-gray-700 sm:table-cell",
+                  dark && "!text-gray-400"
+                )}
+              >
                 {formatPriceFromCents(art.service_price)}
               </td>
-              <td className="py-5 pl-8 pr-0 text-right align-top tabular-nums text-gray-700">
+              <td
+                className={clsx(
+                  "py-5 pl-8 pr-0 text-right align-top tabular-nums text-gray-700",
+                  dark && "!text-gray-400"
+                )}
+              >
                 {formatPriceFromCents(art.service_quant * art.service_price)}
               </td>
             </tr>
@@ -154,18 +210,29 @@ export default function OrderInvoice({
             <tr>
               <th
                 scope="row"
-                className="px-0 pb-0 pt-6 font-normal text-gray-700 sm:hidden"
+                className={clsx(
+                  "px-0 pb-0 pt-6 font-normal text-gray-700 sm:hidden",
+                  dark && "text-gray-500"
+                )}
               >
                 Subtotal
               </th>
               <th
                 scope="row"
                 colSpan={3}
-                className="hidden px-0 pb-0 pt-6 text-right font-normal text-gray-700 sm:table-cell"
+                className={clsx(
+                  "hidden px-0 pb-0 pt-6 text-right font-normal text-gray-700 sm:table-cell",
+                  dark && "text-gray-500"
+                )}
               >
                 Subtotal
               </th>
-              <td className="pb-0 pl-8 pr-0 pt-6 text-right tabular-nums text-gray-900">
+              <td
+                className={clsx(
+                  "pb-0 pl-8 pr-0 pt-6 text-right tabular-nums text-gray-900",
+                  dark && "text-white"
+                )}
+              >
                 {order.subtotal}
               </td>
             </tr>
@@ -174,18 +241,29 @@ export default function OrderInvoice({
             <tr>
               <th
                 scope="row"
-                className="pt-4 font-normal text-gray-700 sm:hidden"
+                className={clsx(
+                  "pt-4 font-normal text-gray-700 sm:hidden",
+                  dark && "text-gray-500"
+                )}
               >
                 Tax
               </th>
               <th
                 scope="row"
                 colSpan={3}
-                className="hidden pt-4 text-right font-normal text-gray-700 sm:table-cell"
+                className={clsx(
+                  "hidden pt-4 text-right font-normal text-gray-700 sm:table-cell",
+                  dark && "text-gray-500"
+                )}
               >
                 Tax
               </th>
-              <td className="pb-0 pl-8 pr-0 pt-4 text-right tabular-nums text-gray-900">
+              <td
+                className={clsx(
+                  "pb-0 pl-8 pr-0 pt-4 text-right tabular-nums text-gray-900",
+                  dark && "text-white"
+                )}
+              >
                 {order.tax}
               </td>
             </tr>
@@ -193,18 +271,29 @@ export default function OrderInvoice({
           <tr>
             <th
               scope="row"
-              className="pt-4 font-semibold text-gray-900 sm:hidden"
+              className={clsx(
+                "pt-4 font-semibold text-gray-900 sm:hidden",
+                dark && "text-white"
+              )}
             >
               Total
             </th>
             <th
               scope="row"
               colSpan={3}
-              className="hidden pt-4 text-right font-semibold text-gray-900 sm:table-cell"
+              className={clsx(
+                "hidden pt-4 text-right font-semibold text-gray-900 sm:table-cell",
+                dark && "text-white"
+              )}
             >
               Total
             </th>
-            <td className="pb-0 pl-8 pr-0 pt-4 text-right font-semibold tabular-nums text-gray-900">
+            <td
+              className={clsx(
+                "pb-0 pl-8 pr-0 pt-4 text-right font-semibold tabular-nums text-gray-900",
+                dark && "text-white"
+              )}
+            >
               {formatPriceFromCents(order.total)}
             </td>
           </tr>
