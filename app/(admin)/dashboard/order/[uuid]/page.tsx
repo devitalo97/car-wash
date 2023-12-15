@@ -2,7 +2,7 @@ import OrderSummary from "@/app/ui/order-summary";
 import { fetchOrderByUUID } from "@/app/lib/data";
 import OrderHeader from "@/app/ui/order-header";
 import OrderInvoice from "@/app/ui/order-invoice";
-import OrderActivity from "@/app/(client)/order/[uuid]/order-activity";
+import OrderActivity from "@/app/ui/order-activity";
 
 export default async function Example({
   params,
@@ -73,7 +73,7 @@ export default async function Example({
               </div>
 
               <div className="lg:col-start-3">
-                <OrderActivity order={order} />
+                <OrderActivity order={order} dark />
               </div>
             </div>
           </div>

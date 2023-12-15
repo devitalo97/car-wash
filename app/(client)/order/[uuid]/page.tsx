@@ -1,6 +1,6 @@
 import OrderHeader from "../../../ui/order-header";
 import OrderSummary from "../../../ui/order-summary";
-import OrderActivity from "./order-activity";
+import OrderActivity from "../../../ui/order-activity";
 import OrderInvoice from "../../../ui/order-invoice";
 import { fetchOrderByUUID } from "@/app/lib/data";
 

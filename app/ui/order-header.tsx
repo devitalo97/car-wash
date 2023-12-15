@@ -44,7 +44,12 @@ export default function OrderHeader({
                   dark && textBaseDark
                 )}
               >
-                Fatura <span className="text-gray-700">#{protocol}</span>
+                Fatura{" "}
+                <span
+                  className={clsx("text-gray-700", dark && "text-gray-400")}
+                >
+                  #{protocol}
+                </span>
               </div>
               <div
                 className={clsx(

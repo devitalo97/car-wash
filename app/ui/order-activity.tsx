@@ -5,7 +5,13 @@ import { auth } from "@/auth";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
 
-export default async function OrderActivity({ order }: { order: Order }) {
+export default async function OrderActivity({
+  order,
+  dark = false,
+}: {
+  order: Order;
+  dark?: boolean;
+}) {
   const session = await auth();
   const createOrderInteractionBinded = createOrderInteraction.bind(null, {
     order_uuid: order.uuid,
@@ -13,6 +19,11 @@ export default async function OrderActivity({ order }: { order: Order }) {
   });
 
   const activity = order.interactions as (OrderInteraction & { user: User })[];
+  const pointBgDark = "!bg-transparent";
+  const pointDark = "rounded-xl bg-white/5";
+
+  const textDark = "text-white";
+  const ringDark = "ring-1 ring-white/5";
 
   return (
     <div>
@@ -30,7 +41,9 @@ export default async function OrderActivity({ order }: { order: Order }) {
                   "absolute left-0 top-0 flex w-6 justify-center"
                 )}
               >
-                <div className="w-px bg-gray-200" />
+                <div
+                  className={clsx("w-px bg-gray-200", dark && "bg-white/5")}
+                />
               </div>
               {activityItem.type === "commented" && activityItem?.user ? (
                 <>
@@ -41,47 +54,95 @@ export default async function OrderActivity({ order }: { order: Order }) {
                       className="relative mt-3 h-6 w-6 flex-none rounded-full bg-gray-50"
                     />
                   }
-                  <div className="flex-auto rounded-md p-3 ring-1 ring-inset ring-gray-200">
+                  <div
+                    className={clsx(
+                      "flex-auto rounded-md p-3 ring-1 ring-inset ring-gray-200",
+                      dark && ringDark
+                    )}
+                  >
                     <div className="flex justify-between gap-x-4">
-                      <div className="py-0.5 text-xs leading-5 text-gray-500">
-                        <span className="font-medium text-gray-900">
+                      <div
+                        className={clsx(
+                          "py-0.5 text-xs leading-5 text-gray-500",
+                          dark && "text-gray-400"
+                        )}
+                      >
+                        <span
+                          className={clsx(
+                            "font-medium text-gray-900",
+                            dark && textDark
+                          )}
+                        >
                           {activityItem.user.name}
                         </span>{" "}
                         commented
                       </div>
                       <time
                         dateTime={activityItem.created_at.toString()}
-                        className="flex-none py-0.5 text-xs leading-5 text-gray-500"
+                        className={clsx(
+                          "flex-none py-0.5 text-xs leading-5 text-gray-500",
+                          dark && "text-gray-400"
+                        )}
                       >
                         {formatShortDate(activityItem.created_at)}
                       </time>
                     </div>
-                    <p className="text-sm leading-6 text-gray-500">
+                    <p
+                      className={clsx(
+                        "text-sm leading-6 text-gray-500",
+                        dark && "text-gray-400"
+                      )}
+                    >
                       {activityItem.comment}
                     </p>
                   </div>
                 </>
               ) : (
                 <>
-                  <div className="relative flex h-6 w-6 flex-none items-center justify-center bg-white">
+                  <div
+                    className={clsx(
+                      "relative flex h-6 w-6 flex-none items-center justify-center bg-white",
+                      dark && activityItem.type === "paid"
+                        ? pointDark
+                        : pointBgDark
+                    )}
+                  >
                     {activityItem.type === "paid" ? (
                       <CheckCircleIcon
                         className="h-6 w-6 text-indigo-600"
                         aria-hidden="true"
                       />
                     ) : (
-                      <div className="h-1.5 w-1.5 rounded-full bg-gray-100 ring-1 ring-gray-300" />
+                      <div
+                        className={clsx(
+                          "h-1.5 w-1.5 rounded-full bg-gray-100 ring-1 ring-gray-300",
+                          dark && pointBgDark
+                        )}
+                      />
                     )}
                   </div>
-                  <p className="flex-auto py-0.5 text-xs leading-5 text-gray-500">
-                    <span className="font-medium text-gray-900">
+                  <p
+                    className={clsx(
+                      "flex-auto py-0.5 text-xs leading-5 text-gray-500",
+                      dark && "text-gray-400"
+                    )}
+                  >
+                    <span
+                      className={clsx(
+                        "font-medium text-gray-900",
+                        dark && textDark
+                      )}
+                    >
                       {activityItem.user?.name}
                     </span>{" "}
                     {activityItem.type} the invoice.
                   </p>
                   <time
                     dateTime={activityItem.created_at.toString()}
-                    className="flex-none py-0.5 text-xs leading-5 text-gray-500"
+                    className={clsx(
+                      "flex-none py-0.5 text-xs leading-5 text-gray-500",
+                      dark && "text-gray-400"
+                    )}
                   >
                     {formatShortDate(activityItem.created_at)}
                   </time>
@@ -103,7 +164,12 @@ export default async function OrderActivity({ order }: { order: Order }) {
           action={createOrderInteractionBinded}
           className="relative flex-auto"
         >
-          <div className="overflow-hidden rounded-lg pb-12 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+          <div
+            className={clsx(
+              "overflow-hidden rounded-lg pb-12 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600",
+              dark && ringDark
+            )}
+          >
             <label htmlFor="comment" className="sr-only">
               Add your comment
             </label>
