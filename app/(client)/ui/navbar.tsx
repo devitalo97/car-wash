@@ -1,11 +1,28 @@
-import { ShoppingBagIcon } from "@heroicons/react/24/outline";
 import br from "@/public/br.svg";
-import Link from "next/link";
 import Image from "next/image";
 import { auth } from "@/auth";
 import { logout } from "@/app/lib/actions";
 import { CartButton } from "./cart-button";
+import Link from "next/link";
 
+const links = [
+  { id: 1, name: "Home", href: "/" },
+  {
+    id: 2,
+    name: "Produtos",
+    href: `/product`,
+  },
+  {
+    id: 3,
+    name: "Agendamento",
+    href: `/schedule`,
+  },
+  {
+    id: 4,
+    name: "Galeria",
+    href: `/gallery`,
+  },
+];
 export default async function NavBar() {
   const session = await auth();
   const isLoggedIn = !!session?.user;
@@ -27,6 +44,18 @@ export default async function NavBar() {
                   alt=""
                 />
               </Link>
+            </div>
+            <div className="hidden lg:ml-6 lg:flex lg:space-x-8">
+              {/* Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" */}
+              {links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="inline-flex items-center  px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300"
+                >
+                  {link.name}
+                </Link>
+              ))}
             </div>
 
             <div className="ml-auto flex items-center">
@@ -58,8 +87,7 @@ export default async function NavBar() {
                 </a>
               </div>
 
-              {/* Cart */}
-              <CartButton />
+              {/* <CartButton /> */}
             </div>
           </div>
         </div>
