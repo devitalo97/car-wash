@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import OrderList from "@/app/(admin)/ui/order-list";
-import ClientList from "@/app/(admin)/ui/client-list";
-import { ClientListSkeleton, OrderListSkeleton } from "@/app/ui/skeletons";
+import { OrderListSkeleton } from "@/app/ui/skeletons";
 import SearchBar from "@/app/(admin)/ui/search-bar";
 
 export default function Example({
@@ -19,7 +18,7 @@ export default function Example({
       <SearchBar placeholder="Busque pelas ordens" />
 
       <Suspense key={query + currentPage} fallback={<OrderListSkeleton />}>
-        <OrderList query={query} currentPage={currentPage} />
+        <OrderList />
       </Suspense>
     </div>
   );
