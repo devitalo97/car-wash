@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "@/app/ui/globals.css";
 import { logout } from "@/app/lib/actions";
-import SideBar from "@/app/(admin)/ui/sidebar";
+import SideBar from "@/app/(admin)/ui/side-bar";
 import { auth } from "@/auth";
 import { User } from "@/app/lib/definitions";
 

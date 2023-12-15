@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="h-full">
+    <html lang="pt-br" className="h-full">
       <body className={`${inter.className} antialiased bg-white h-full`}>
         {children}
       </body>

@@ -8,6 +8,7 @@ import {
   ClockIcon,
   ArrowLeftOnRectangleIcon,
   UserGroupIcon,
+  PhotoIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "next/link";
@@ -34,6 +35,11 @@ const nav = [
     name: "Clientes",
     href: "/dashboard/client",
     icon: UserGroupIcon,
+  },
+  {
+    name: "Galeria",
+    href: "/dashboard/gallery",
+    icon: PhotoIcon,
   },
 ];
 

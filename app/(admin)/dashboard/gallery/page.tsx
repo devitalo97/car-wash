@@ -13,6 +13,7 @@
   }
   ```
 */
+"use client";
 import { Fragment, ReactNode, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
@@ -140,152 +141,14 @@ export default function Example() {
         <body class="h-full overflow-hidden">
         ```
       */}
-      <div className="flex h-full">
-        {/* Narrow sidebar */}
-        <div className="hidden w-28 overflow-y-auto bg-indigo-700 md:block">
-          <div className="flex w-full flex-col items-center py-6">
-            <div className="flex flex-shrink-0 items-center">
-              <img
-                className="h-8 w-auto"
-                src="https://tailwindui.com/img/logos/mark.svg?color=white"
-                alt="Your Company"
-              />
-            </div>
-            <div className="mt-6 w-full flex-1 space-y-1 px-2">
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={clsx(
-                    item.current
-                      ? "bg-indigo-800 text-white"
-                      : "text-indigo-100 hover:bg-indigo-800 hover:text-white",
-                    "group flex w-full flex-col items-center rounded-md p-3 text-xs font-medium"
-                  )}
-                  aria-current={item.current ? "page" : undefined}
-                >
-                  <item.icon
-                    className={clsx(
-                      item.current
-                        ? "text-white"
-                        : "text-indigo-300 group-hover:text-white",
-                      "h-6 w-6"
-                    )}
-                    aria-hidden="true"
-                  />
-                  <span className="mt-2">{item.name}</span>
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile menu */}
-        <Transition.Root show={mobileMenuOpen} as={Fragment}>
-          <Dialog
-            as="div"
-            className="relative z-40 md:hidden"
-            onClose={setMobileMenuOpen}
-          >
-            <Transition.Child
-              as={Fragment}
-              enter="transition-opacity ease-linear duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="transition-opacity ease-linear duration-300"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
-            </Transition.Child>
-
-            <div className="fixed inset-0 z-40 flex">
-              <Transition.Child
-                as={Fragment}
-                enter="transition ease-in-out duration-300 transform"
-                enterFrom="-translate-x-full"
-                enterTo="translate-x-0"
-                leave="transition ease-in-out duration-300 transform"
-                leaveFrom="translate-x-0"
-                leaveTo="-translate-x-full"
-              >
-                <Dialog.Panel className="relative flex w-full max-w-xs flex-1 flex-col bg-indigo-700 pb-4 pt-5">
-                  <Transition.Child
-                    as={Fragment}
-                    enter="ease-in-out duration-300"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in-out duration-300"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  >
-                    <div className="absolute right-0 top-1 -mr-14 p-1">
-                      <button
-                        type="button"
-                        className="flex h-12 w-12 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-white"
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        <XMarkIcon
-                          className="h-6 w-6 text-white"
-                          aria-hidden="true"
-                        />
-                        <span className="sr-only">Close sidebar</span>
-                      </button>
-                    </div>
-                  </Transition.Child>
-                  <div className="flex flex-shrink-0 items-center px-4">
-                    <img
-                      className="h-8 w-auto"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=white"
-                      alt="Your Company"
-                    />
-                  </div>
-                  <div className="mt-5 h-0 flex-1 overflow-y-auto px-2">
-                    <nav className="flex h-full flex-col">
-                      <div className="space-y-1">
-                        {navigation.map((item) => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className={clsx(
-                              item.current
-                                ? "bg-indigo-800 text-white"
-                                : "text-indigo-100 hover:bg-indigo-800 hover:text-white",
-                              "group flex items-center rounded-md py-2 px-3 text-sm font-medium"
-                            )}
-                            aria-current={item.current ? "page" : undefined}
-                          >
-                            <item.icon
-                              className={clsx(
-                                item.current
-                                  ? "text-white"
-                                  : "text-indigo-300 group-hover:text-white",
-                                "mr-3 h-6 w-6"
-                              )}
-                              aria-hidden="true"
-                            />
-                            <span>{item.name}</span>
-                          </a>
-                        ))}
-                      </div>
-                    </nav>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-              <div className="w-14 flex-shrink-0" aria-hidden="true">
-                {/* Dummy element to force sidebar to shrink to fit close icon */}
-              </div>
-            </div>
-          </Dialog>
-        </Transition.Root>
-
+      <div className="flex h-full xl:pl-72 bg-gray-900">
         {/* Content area */}
         <div className="flex flex-1 flex-col overflow-hidden">
           <header className="w-full">
-            <div className="relative z-10 flex h-16 flex-shrink-0 border-b border-gray-200 bg-white shadow-sm">
+            <div className="relative z-10 flex h-16 flex-shrink-0 border-b border-white/5 bg-gray-900 shadow-sm">
               <button
                 type="button"
-                className="border-r border-gray-200 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
+                className="border-r border-white/5 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 md:hidden"
                 onClick={() => setMobileMenuOpen(true)}
               >
                 <span className="sr-only">Open sidebar</span>
@@ -310,14 +173,14 @@ export default function Example() {
                       <input
                         name="mobile-search-field"
                         id="mobile-search-field"
-                        className="h-full w-full border-0 py-2 pl-8 pr-3 text-base text-gray-900 focus:outline-none focus:ring-0 focus:placeholder:text-gray-400 sm:hidden"
+                        className="h-full bg-transparent w-full border-0 py-2 pl-8 pr-3 text-base text-white focus:outline-none focus:ring-0 focus:placeholder:text-gray-400 sm:hidden"
                         placeholder="Search"
                         type="search"
                       />
                       <input
                         name="desktop-search-field"
                         id="desktop-search-field"
-                        className="hidden h-full w-full border-0 py-2 pl-8 pr-3 text-sm text-gray-900 focus:outline-none focus:ring-0 focus:placeholder:text-gray-400 sm:block"
+                        className="hidden bg-transparent h-full w-full border-0 py-2 pl-8 pr-3 text-sm text-white focus:outline-none focus:ring-0 focus:placeholder:text-gray-400 sm:block"
                         placeholder="Search all files"
                         type="search"
                       />
@@ -325,48 +188,6 @@ export default function Example() {
                   </form>
                 </div>
                 <div className="ml-2 flex items-center space-x-4 sm:ml-6 sm:space-x-6">
-                  {/* Profile dropdown */}
-                  <Menu as="div" className="relative flex-shrink-0">
-                    <div>
-                      <Menu.Button className="relative flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2">
-                        <span className="absolute -inset-1.5" />
-                        <span className="sr-only">Open user menu</span>
-                        <img
-                          className="h-8 w-8 rounded-full"
-                          src="https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80"
-                          alt=""
-                        />
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
-                    >
-                      <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        {userNavigation.map((item) => (
-                          <Menu.Item key={item.name}>
-                            {({ active }) => (
-                              <a
-                                href={item.href}
-                                className={clsx(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                {item.name}
-                              </a>
-                            )}
-                          </Menu.Item>
-                        ))}
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
-
                   <button
                     type="button"
                     className="relative rounded-full bg-indigo-600 p-1.5 text-white hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -385,8 +206,8 @@ export default function Example() {
             <main className="flex-1 overflow-y-auto">
               <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
                 <div className="flex">
-                  <h1 className="flex-1 text-2xl font-bold text-gray-900">
-                    Photos
+                  <h1 className="flex-1 text-2xl font-bold text-white">
+                    Galeria
                   </h1>
                   <div className="ml-6 flex items-center rounded-lg bg-gray-100 p-0.5 sm:hidden">
                     <button
@@ -406,69 +227,6 @@ export default function Example() {
                       />
                       <span className="sr-only">Use grid view</span>
                     </button>
-                  </div>
-                </div>
-
-                {/* Tabs */}
-                <div className="mt-3 sm:mt-2">
-                  <div className="sm:hidden">
-                    <label htmlFor="tabs" className="sr-only">
-                      Select a tab
-                    </label>
-                    {/* Use an "onChange" listener to redirect the user to the selected tab URL. */}
-                    <select
-                      id="tabs"
-                      name="tabs"
-                      className="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                      defaultValue="Recently Viewed"
-                    >
-                      <option>Recently Viewed</option>
-                      <option>Recently Added</option>
-                      <option>Favorited</option>
-                    </select>
-                  </div>
-                  <div className="hidden sm:block">
-                    <div className="flex items-center border-b border-gray-200">
-                      <nav
-                        className="-mb-px flex flex-1 space-x-6 xl:space-x-8"
-                        aria-label="Tabs"
-                      >
-                        {tabs.map((tab) => (
-                          <a
-                            key={tab.name}
-                            href={tab.href}
-                            aria-current={tab.current ? "page" : undefined}
-                            className={clsx(
-                              tab.current
-                                ? "border-indigo-500 text-indigo-600"
-                                : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
-                              "whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium"
-                            )}
-                          >
-                            {tab.name}
-                          </a>
-                        ))}
-                      </nav>
-                      <div className="ml-6 hidden items-center rounded-lg bg-gray-100 p-0.5 sm:flex">
-                        <button
-                          type="button"
-                          className="rounded-md p-1.5 text-gray-400 hover:bg-white hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-                        >
-                          <Bars4Icon className="h-5 w-5" aria-hidden="true" />
-                          <span className="sr-only">Use list view</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="ml-0.5 rounded-md bg-white p-1.5 text-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-                        >
-                          <Squares2X2IconMini
-                            className="h-5 w-5"
-                            aria-hidden="true"
-                          />
-                          <span className="sr-only">Use grid view</span>
-                        </button>
-                      </div>
-                    </div>
                   </div>
                 </div>
 
@@ -511,7 +269,7 @@ export default function Example() {
                             </span>
                           </button>
                         </div>
-                        <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-gray-900">
+                        <p className="pointer-events-none mt-2 block truncate text-sm font-medium text-white">
                           {file.name}
                         </p>
                         <p className="pointer-events-none block text-sm font-medium text-gray-500">
@@ -525,7 +283,7 @@ export default function Example() {
             </main>
 
             {/* Details sidebar */}
-            <aside className="hidden w-96 overflow-y-auto border-l border-gray-200 bg-white p-8 lg:block">
+            <aside className="hidden w-96 overflow-y-auto border-l border-white/5 bg-gray-900 p-8 lg:block">
               <div className="space-y-6 pb-16">
                 <div>
                   <div className="aspect-h-7 aspect-w-10 block w-full overflow-hidden rounded-lg">
@@ -537,7 +295,7 @@ export default function Example() {
                   </div>
                   <div className="mt-4 flex items-start justify-between">
                     <div>
-                      <h2 className="text-lg font-medium text-gray-900">
+                      <h2 className="text-lg font-medium text-white">
                         <span className="sr-only">Details for </span>
                         {currentFile.name}
                       </h2>
@@ -556,15 +314,15 @@ export default function Example() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900">Information</h3>
-                  <dl className="mt-2 divide-y divide-gray-200 border-b border-t border-gray-200">
+                  <h3 className="font-medium text-white">Information</h3>
+                  <dl className="mt-2 divide-y divide-white/5 border-b border-t border-white/5">
                     {Object.keys(currentFile.information).map((key) => (
                       <div
                         key={key}
                         className="flex justify-between py-3 text-sm font-medium"
                       >
                         <dt className="text-gray-500">{key}</dt>
-                        <dd className="whitespace-nowrap text-gray-900">
+                        <dd className="whitespace-nowrap text-white">
                           {
                             currentFile.information[
                               key as keyof typeof currentFile.information
@@ -576,7 +334,7 @@ export default function Example() {
                   </dl>
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900">Description</h3>
+                  <h3 className="font-medium text-white">Description</h3>
                   <div className="mt-2 flex items-center justify-between">
                     <p className="text-sm italic text-gray-500">
                       Add a description to this image.
@@ -591,50 +349,7 @@ export default function Example() {
                     </button>
                   </div>
                 </div>
-                <div>
-                  <h3 className="font-medium text-gray-900">Shared with</h3>
-                  <ul
-                    role="list"
-                    className="mt-2 divide-y divide-gray-200 border-b border-t border-gray-200"
-                  >
-                    {currentFile.sharedWith.map((person) => (
-                      <li
-                        key={person.id}
-                        className="flex items-center justify-between py-3"
-                      >
-                        <div className="flex items-center">
-                          <img
-                            src={person.imageUrl}
-                            alt=""
-                            className="h-8 w-8 rounded-full"
-                          />
-                          <p className="ml-4 text-sm font-medium text-gray-900">
-                            {person.name}
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          className="ml-6 rounded-md bg-white text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                          Remove<span className="sr-only"> {person.name}</span>
-                        </button>
-                      </li>
-                    ))}
-                    <li className="flex items-center justify-between py-2">
-                      <button
-                        type="button"
-                        className="group -ml-1 flex items-center rounded-md bg-white p-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                      >
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-dashed border-gray-300 text-gray-400">
-                          <PlusIcon className="h-5 w-5" aria-hidden="true" />
-                        </span>
-                        <span className="ml-4 text-sm font-medium text-indigo-600 group-hover:text-indigo-500">
-                          Share
-                        </span>
-                      </button>
-                    </li>
-                  </ul>
-                </div>
+
                 <div className="flex gap-x-3">
                   <button
                     type="button"
