@@ -38,11 +38,9 @@ export function useServiceUpdateForm({
 
   const handleSubmit = submit(async ({ file_upload, old_upload }, e) => {
     const formData = new FormData(e?.target)
-    console.log('file_upload', file_upload)
     file_upload.forEach((file: File, index: number) => {
       formData.set(`file_upload[${index}]`, file)
     })
-    console.log('old_upload', old_upload)
     old_upload.forEach((file: File, index: number) => {
       formData.set(`old_upload[${index}]`, file)
     })

@@ -3,7 +3,6 @@ import { fetchOrdersWithServices } from "@/app/lib/data";
 
 export default async function Example() {
   const orders = await fetchOrdersWithServices();
-  console.log("orders", orders);
   return (
     <div className="bg-white">
       <div className="py-16 sm:py-24">
