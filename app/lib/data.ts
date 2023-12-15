@@ -87,22 +87,68 @@ export async function fetchOrdersWithServices(): Promise<(Order & { services: Se
     }
   ]).toArray() as (Order & { services: Service[] })[]
 }
-export async function fetchOrderById(uuid: string): Promise<Order> {
+export async function fetchOrderByUUID(uuid: string): Promise<Order & { services: Service[], user: User }> {
   const order = await (await clientPromise).db("car-wash").collection("order").aggregate([
-    { $match: uuid },
+    { $match: { uuid } },
     {
       $lookup: {
         from: "service",
-        localField: "artifacts.service_uuid",
+        localField: "artfacts.service_uuid",
         foreignField: "uuid",
         as: "services"
       }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "user_uuid",
+        foreignField: "uuid",
+        as: "user"
+      }
+    },
+    {
+      $unwind: "$interactions"
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "interactions.user_uuid",
+        foreignField: "uuid",
+        as: "interactions.user"
+      }
+    },
+    {
+      $addFields: {
+        user: { $arrayElemAt: ["$user", 0] },
+        "interactions.user": { $arrayElemAt: ["$interactions.user", 0] },
+      }
+    },
+    {
+      $group: {
+        _id: "$_id",
+        document: { $first: "$$ROOT" },
+        interactions: { $push: "$interactions" }
+      }
+    },
+    {
+      $replaceRoot: { newRoot: { $mergeObjects: ["$document", { interactions: "$interactions" }] } }
+    },
+    {
+      $project: {
+        _id: 0,
+        "user._id": 0,
+        "services._id": 0
+      }
     }]).toArray()
-  return order as unknown as Order
+  return order?.[0] as unknown as Order & { services: Service[], user: User }
 }
 
-export async function updateOneOrderStatusByStripeSessionId(stripe_session_id: string, status: string | null) {
-  await (await clientPromise).db("car-wash").collection("order").updateOne({ stripe_session_id: stripe_session_id }, { $set: { status: status } })
+export async function updateOneOrderByStripeSessionId(stripe_session_id: string, status: string | null, user_uuid: string) {
+  await (await clientPromise).db("car-wash").collection("order").updateOne({ stripe_session_id: stripe_session_id }, { $set: { status: status, user_uuid } })
+}
+
+export async function pushInteractionsOnOrderByUUID(uuid: string, interactions: Order["interactions"]): Promise<void> {
+  await (await clientPromise).db("car-wash").collection("order").updateOne({ uuid }, { $addToSet: { interactions: { $each: interactions } } })
 }
 
 //SCHEDULE ===============================================================================

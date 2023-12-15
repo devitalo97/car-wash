@@ -1,9 +1,9 @@
 'use server';
 
 import { z } from 'zod';
-import { createOneOrder, createOneSchedule, createOneService, createOneUser, createOneUserByEmail, createStripePrice, createStripeProductAndPrice, deactivateStripePrice, deactivateStripeProduct, deleteOneSchedule, deleteOneService, fetchServiceById, fetchUserByEmail, pushOrderOnUserByUUID, s3Upload, updateOneOrderStatusByStripeSessionId, updateOneSchedule, updateOneService, updateStripeProduct } from './data';
+import { createOneOrder, createOneSchedule, createOneService, createOneUser, createOneUserByEmail, createStripePrice, createStripeProductAndPrice, deactivateStripePrice, deactivateStripeProduct, deleteOneSchedule, deleteOneService, fetchServiceById, fetchUserByEmail, pushInteractionsOnOrderByUUID, pushOrderOnUserByUUID, s3Upload, updateOneOrderByStripeSessionId, updateOneSchedule, updateOneService, updateStripeProduct } from './data';
 import { v4 as uuidv4 } from 'uuid';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { auth, signIn, signOut } from '@/auth';
 import Stripe from 'stripe'
@@ -67,7 +67,6 @@ const UpdateServiceFormSchema = z.object({
   old_upload: z.any()
 });
 export async function updateService(id: string, formData: FormData) {
-  console.log(formData)
   const oldSerivce = await fetchServiceById(id)
   const formDataValue = Object.fromEntries(formData.entries())
   //upload de novas imanges
@@ -76,9 +75,6 @@ export async function updateService(id: string, formData: FormData) {
   const filesUploaded = await uploadFileInS3(files as File[])
 
   const oldUpload = Object.entries(formDataValue).filter(([key]) => key.includes("old_upload")).map(([, value]) => value) as unknown as UploadFileInS3Output[]
-
-  console.log('filesUploaded', filesUploaded)
-  console.log('oldUpload', oldUpload)
 
 
   //validando e montando o objeto do service
@@ -260,8 +256,22 @@ export async function createCheckoutSessionFromProductPage(parameters: createChe
       artfacts: [{
         service_uuid: parameters.service_uuid,
         service_price: parameters.service_price,
+        service_quant: 1,
         scheduladable_metadata: { schedule_uuid }
       }],
+      pay_with: "card",
+      interactions: [
+        {
+          created_at: new Date(),
+          type: "created",
+          uuid: uuidv4()
+        },
+        {
+          created_at: new Date(),
+          type: "pending",
+          uuid: uuidv4()
+        }
+      ]
     })
   } catch (error) {
     console.error(error)
@@ -275,12 +285,20 @@ export async function retriveCheckoutSession(formData: FormData) {
   const order_uuid = formData.get("order_uuid") as string
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
   const session = await stripe.checkout.sessions.retrieve(session_id);
-  await updateOneOrderStatusByStripeSessionId(session_id, session.status)
+  const userExists = await fetchUserByEmail(session?.customer_details?.email!)
   if (Number(Boolean(session.metadata!.guest))) {
     //previnir criação de multiplos user no refresh da pagina de return do pagamento
-    const userExists = await fetchUserByEmail(session?.customer_details?.email!)
     if (userExists) {
-      await pushOrderOnUserByUUID(userExists.uuid, [order_uuid])
+      await Promise.all([
+        pushOrderOnUserByUUID(userExists.uuid, [order_uuid]),
+        updateOneOrderByStripeSessionId(session_id, session.status, userExists.uuid),
+        pushInteractionsOnOrderByUUID(order_uuid, [{
+          uuid: uuidv4(),
+          created_at: new Date(),
+          type: session.status === "complete" ? "paid" : "pending",
+          user_uuid: userExists?.uuid
+        }])
+      ])
       return {
         status: session.status,
         customer_details: session?.customer_details,
@@ -294,17 +312,43 @@ export async function retriveCheckoutSession(formData: FormData) {
       role: "guest",
       orders_uuid: [order_uuid]
     }
-    await createOneUser(user)
+    await Promise.all([
+      createOneUser(user),
+      updateOneOrderByStripeSessionId(session_id, session.status, user.uuid),
+      pushInteractionsOnOrderByUUID(order_uuid, [{
+        uuid: uuidv4(),
+        created_at: new Date(),
+        type: session.status === "complete" ? "paid" : "pending",
+        user_uuid: user?.uuid
+      }])
+    ])
     return {
       status: session.status,
       customer_details: session?.customer_details,
       user
     }
   }
+  await Promise.all([
+    pushOrderOnUserByUUID(userExists?.uuid!, [order_uuid]),
+    updateOneOrderByStripeSessionId(session_id, session.status, userExists?.uuid!),
+    pushInteractionsOnOrderByUUID(order_uuid, [{
+      uuid: uuidv4(),
+      created_at: new Date(),
+      type: session.status === "complete" ? "paid" : "pending",
+      user_uuid: userExists?.uuid
+    }])
+  ])
   return {
     status: session.status,
     customer_details: session?.customer_details,
   }
+}
+
+type createOrderInteractionProps = { order_uuid: string, user_uuid: string }
+export async function createOrderInteraction(parameters: createOrderInteractionProps, formData: FormData) {
+  const { comment } = Object.fromEntries(formData.entries())
+  await pushInteractionsOnOrderByUUID(parameters.order_uuid, [{ uuid: uuidv4(), comment: comment as string, user_uuid: parameters.user_uuid, type: "commented", created_at: new Date() }])
+  revalidatePath(`/order/${parameters.order_uuid}`)
 }
 
 const CreateUserFormSchema = z.object({

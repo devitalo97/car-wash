@@ -38,7 +38,7 @@ export default async function Example({
               </div>
 
               <div className="lg:col-start-3">
-                <OrderActivity />
+                <OrderActivity order={order} />
               </div>
             </div>
           </div>

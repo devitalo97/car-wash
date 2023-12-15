@@ -47,11 +47,24 @@ export type Order = {
   artfacts: OrderArtfact[]
   created_at: Date
   protocol: string
+  pay_with: "card" | "pix"
+  subtotal?: number
+  tax?: number
+  interactions: OrderInteraction[]
+}
+
+export type OrderInteraction = {
+  uuid: string
+  created_at: Date
+  type: "commented" | "sent" | "created" | "edited" | "viewed" | "paid" | "pending"
+  user_uuid?: string
+  comment?: string
 }
 
 type OrderArtfact = {
   service_uuid: string
   service_price: number
+  service_quant: number
   scheduladable_metadata?: Record<string, string>
   shippable_metadata?: Record<string, string>
 }
