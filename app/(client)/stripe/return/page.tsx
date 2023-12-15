@@ -12,12 +12,12 @@ export default function Return() {
     useState<Stripe.Checkout.Session.CustomerDetails | null>(null);
   const [isGuest, setIsGuest] = useState<boolean>(false);
   const [isFirstRendered, setIsFirstRendered] = useState(true);
+  const [orderUiud, setOrderUiud] = useState<string>();
 
   useEffect(() => {
     setIsFirstRendered(false);
     (async () => {
       if (isFirstRendered) return;
-
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
       const sessionId = urlParams.get("session_id");
@@ -25,9 +25,13 @@ export default function Return() {
       const guest = urlParams.get("guest");
       if (!Boolean(Number(guest))) setIsGuest(true);
       const formData = new FormData();
+      setOrderUiud(orderUiud as string);
+
       formData.append("session_id", sessionId as string);
       formData.append("order_uuid", orderUiud as string);
+
       const result = await retriveCheckoutSession(formData);
+
       setStatus(result.status);
       setCustomerDetails(result.customer_details);
     })();
@@ -124,12 +128,12 @@ export default function Return() {
                   </p>
                 </div>
                 <div className="mt-10 flex flex-col gap-4">
-                  <button
-                    type="button"
+                  <Link
+                    href={`/order/${orderUiud}`}
                     className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
                   >
                     Ver pedido.
-                  </button>
+                  </Link>
                   <Link
                     href={"/"}
                     type="submit"

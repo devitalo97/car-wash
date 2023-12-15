@@ -17,7 +17,7 @@ function formatTime(date: Date) {
 function formatShortDate(date: Date) {
   return date.toLocaleDateString('pt-BR', {
     year: 'numeric',
-    month: '2-digit',
+    month: 'short',
     day: '2-digit'
   });
 }
