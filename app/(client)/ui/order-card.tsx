@@ -37,14 +37,17 @@ export function OrderCard({
           <div className="hidden sm:block">
             <dt className="font-medium text-gray-900">Data</dt>
             <dd className="mt-1 text-gray-500">
-              <time dateTime={order.created_at.toString()}>
+              <time
+                dateTime={order.created_at.toString()}
+                className="whitespace-nowrap"
+              >
                 {formatShortDate(order.created_at)}
               </time>
             </dd>
           </div>
           <div>
             <dt className="font-medium text-gray-900">Valor Total</dt>
-            <dd className="mt-1 font-medium text-gray-900">
+            <dd className="mt-1 font-medium text-gray-900 whitespace-nowrap">
               {formatPriceFromCents(order.total)}
             </dd>
           </div>
