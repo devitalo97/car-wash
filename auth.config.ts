@@ -34,6 +34,7 @@ export const authConfig = {
           role: user.role,
           avatar: user.avatar,
           created_at: user.created_at,
+          uuid: user.uuid,
         }
       }
       return token
@@ -45,6 +46,8 @@ export const authConfig = {
       session.user.avatar = token.avatar
       // @ts-ignore
       session.user.created_at = token.created_at
+      // @ts-ignore
+      session.user.uuid = token.uuid
       return session
     }
   },

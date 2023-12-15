@@ -6,6 +6,7 @@ declare module "next-auth" {
       avatar: string
       role: string
       created_at: Date
+      uuid: string
     }
   }
 
@@ -13,5 +14,6 @@ declare module "next-auth" {
     avatar: string
     role: string
     created_at: Date
+    uuid: string
   }
 }

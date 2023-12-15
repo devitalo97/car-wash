@@ -1,13 +1,15 @@
 import { createOrderInteraction } from "@/app/lib/actions";
 import { Order, OrderInteraction, User } from "@/app/lib/definitions";
 import { formatShortDate } from "@/app/utils/formatters";
-import { CheckCircleIcon, PaperClipIcon } from "@heroicons/react/20/solid";
+import { auth } from "@/auth";
+import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
 
-export default function OrderActivity({ order }: { order: Order }) {
+export default async function OrderActivity({ order }: { order: Order }) {
+  const session = await auth();
   const createOrderInteractionBinded = createOrderInteraction.bind(null, {
     order_uuid: order.uuid,
-    user_uuid: order.user_uuid!,
+    user_uuid: session?.user.uuid!,
   });
 
   const activity = order.interactions as (OrderInteraction & { user: User })[];
