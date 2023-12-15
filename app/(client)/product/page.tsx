@@ -1,4 +1,5 @@
 import { fetchServices } from "@/app/lib/data";
+import { formatPriceFromCents } from "@/app/utils/formatters";
 
 export default async function Example() {
   const products = await fetchServices();
@@ -51,7 +52,7 @@ export default async function Example() {
                       </p>
                       <div className="flex flex-1 flex-col justify-end">
                         <p className="text-base font-medium text-gray-900">
-                          {product.price}
+                          {formatPriceFromCents(product.price)}
                         </p>
                       </div>
                     </div>
