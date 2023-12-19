@@ -7,7 +7,7 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { auth, signIn, signOut } from '@/auth';
 import Stripe from 'stripe'
-import { Order, Service } from './definitions';
+import { Order, Service, User } from './definitions';
 import bcrypt from 'bcrypt'
 import { createProtocol } from '../utils/createProtocol';
 
@@ -309,7 +309,7 @@ export async function retriveCheckoutSession(formData: FormData) {
       email: session.customer_details?.email!,
       uuid: uuidv4(),
       created_at: new Date(),
-      role: "guest",
+      role: "guest" as User["role"],
       orders_uuid: [order_uuid]
     }
     await Promise.all([
@@ -366,7 +366,7 @@ export async function registerUser(options: RegisterOptions, formData: FormData)
     uuid: uuidv4(),
     email: email,
     password: bcrypt.hashSync(password, bcrypt.genSaltSync(10)),
-    role: "client",
+    role: "client" as User["role"],
     created_at: new Date(),
   }
   if (options.guest) {
