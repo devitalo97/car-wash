@@ -14,7 +14,7 @@ export default async function Example({ params }: { params: { id: string } }) {
     { id: 1, name: "Serviços", href: "/dashboard/schedule" },
     {
       id: 2,
-      name: "Visulaizar serviço",
+      name: "Visualizar serviço",
       href: `/dashboard/schedule/${id}`,
     },
     {

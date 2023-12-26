@@ -1,26 +1,30 @@
-import { fetchServiceById } from "@/app/lib/data";
-import { updateService } from "@/app/lib/actions";
+import GalleryUpdateForm from "@/app/(admin)/ui/form/gallery/update-form";
+import { updateGallery } from "@/app/lib/actions";
+import { fetchGalleryById } from "@/app/lib/data";
 import { notFound } from "next/navigation";
-import ServiceUpdateForm from "@/app/(admin)/ui/form/service/update-form";
 
-export default async function Example({ params }: { params: { id: string } }) {
-  const id = params.id;
-  const service = await fetchServiceById(id);
-  if (!service) {
+export default async function Example({
+  params,
+}: {
+  params: { uuid: string };
+}) {
+  const uuid = params.uuid;
+  const gallery = await fetchGalleryById(uuid);
+  if (!gallery) {
     notFound();
   }
-  const updateInvoiceWithId = updateService.bind(null, service.uuid);
+  const updateInvoiceWithId = updateGallery.bind(null, gallery.uuid);
   const breadcrumbs = [
-    { id: 1, name: "Serviços", href: "/dashboard/service" },
+    { id: 1, name: "Galeria", href: "/dashboard/gallery" },
     {
       id: 2,
-      name: "Visualizar serviço",
-      href: `/dashboard/service/${id}`,
+      name: "Visualizar",
+      href: `/dashboard/gallery/${uuid}`,
     },
     {
       id: 2,
-      name: "Editar serviço",
-      href: `/dashboard/service/${id}/edit`,
+      name: "Editar",
+      href: `/dashboard/gallery/${uuid}/edit`,
     },
   ];
   return (
@@ -54,9 +58,9 @@ export default async function Example({ params }: { params: { id: string } }) {
           ))}
         </ol>
       </nav>
-      <ServiceUpdateForm
-        updateService={updateInvoiceWithId}
-        service={service}
+      <GalleryUpdateForm
+        updateGallery={updateInvoiceWithId}
+        gallery={gallery}
       />
     </div>
   );

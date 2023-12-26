@@ -2,6 +2,7 @@ import { fetchServiceById } from "@/app/lib/data";
 import Link from "next/link";
 import { deleteService } from "@/app/lib/actions";
 import { notFound } from "next/navigation";
+import { Carousel } from "@/app/ui/carousel";
 
 export default async function Example({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -17,7 +18,7 @@ export default async function Example({ params }: { params: { id: string } }) {
   if (!service) {
     notFound();
   }
-  const deleteServiceWithId = deleteService.bind(null, service);
+  const deleteServiceWithId = deleteService.bind(null, service.uuid);
 
   return (
     <div className="xl:pl-72 bg-gray-900 h-full">
@@ -76,13 +77,20 @@ export default async function Example({ params }: { params: { id: string } }) {
 
         {/* Product image */}
         <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
-          <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg">
-            <img
-              src={service.images[0].source}
-              alt={`Image alt for ${service.images[0].name}`}
-              className="h-full w-full object-cover object-center"
-            />
-          </div>
+          <Carousel>
+            {service.images.map((image) => (
+              <div
+                className="aspect-h-1 aspect-w-1 overflow-hidden rounded-lg"
+                key={image.source}
+              >
+                <img
+                  src={image.source}
+                  alt={`Image alt for ${image.name}`}
+                  className="h-full w-full object-cover object-center"
+                />
+              </div>
+            ))}
+          </Carousel>
         </div>
 
         {/* Product form */}

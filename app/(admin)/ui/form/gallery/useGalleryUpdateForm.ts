@@ -1,24 +1,23 @@
-import { Image, Service } from '@/app/lib/definitions';
+import { Gallery, Image } from '@/app/lib/definitions';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 const schema = z.object({
   name: z.string().min(5, 'Please enter a description with at least 5 caracthers.'),
-  price: z.coerce.number().gt(0, { message: 'Please enter an amount greater than R$0.' }),
   description: z.string().min(16, 'Please enter a description with at least 16 caracthers.'),
   file_upload: z.any(),
   old_upload: z.array(z.any())
 });
 
-export type UpdateServiceFormSchemaType = z.infer<typeof schema>
+export type UpdateGalleryFormSchemaType = z.infer<typeof schema>
 
-export function useServiceUpdateForm({
-  updateService,
-  service
+export function useGalleryUpdateForm({
+  updateGallery,
+  gallery
 }: {
-  updateService: (formData: FormData) => Promise<void>
-  service: Service
+  updateGallery: (formData: FormData) => Promise<void>
+  gallery: Gallery
 }) {
   const {
     register,
@@ -26,13 +25,12 @@ export function useServiceUpdateForm({
     clearErrors,
     formState: { errors },
     control
-  } = useForm<UpdateServiceFormSchemaType>({
+  } = useForm<UpdateGalleryFormSchemaType>({
     resolver: zodResolver(schema),
     defaultValues: {
-      name: service.name,
-      description: service.description,
-      price: service.price / 100,
-      old_upload: service.images
+      name: gallery.name,
+      description: gallery.description,
+      old_upload: gallery.media
     }
   });
 
@@ -44,7 +42,7 @@ export function useServiceUpdateForm({
     old_upload?.forEach((file: Image, index: number) => {
       formData.set(`old_upload[${index}]`, JSON.stringify(file))
     })
-    await updateService(formData)
+    await updateGallery(formData)
   });
   return {
     errors,

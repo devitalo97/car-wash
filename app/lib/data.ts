@@ -1,9 +1,6 @@
 import clientPromise from "./mongodb";
-import { Order, Schedule, Service, User } from "./definitions";
+import { Gallery, Order, Schedule, Service, User } from "./definitions";
 import Stripe from 'stripe'
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { s3 } from "./s3";
-import { Readable } from "stream";
 
 //SERVICE ================================================================================
 //
@@ -286,39 +283,48 @@ export async function deactivateStripeProduct(stripe_product_id: string) {
 }
 
 
-type S3UploadInput = {
-  name: string
-  type: string
-  size: number
-  body: string | Uint8Array | Buffer | Readable | Uint8Array | ReadableStream | Blob;
+
+
+
+export async function fetchGallery(): Promise<Gallery[]> {
+  await new Promise<void>((resolve) => setTimeout(resolve, 800))
+  return await (await clientPromise).db("car-wash").collection("gallery").aggregate([
+    {
+      $match: {}
+    }, {
+      $project: {
+        _id: 0
+      }
+    }]).toArray() as Gallery[]
 }
-type S3UploadOutput = {
-  source: string
-  name: string
-  size: number
-  type: string
+export async function fetchFilteredGallery(query: string): Promise<Gallery[]> {
+  return (await (await clientPromise).db("car-wash").collection("gallery").aggregate([
+    {
+      $match: {
+        $or: [
+          { name: { $regex: query, $options: 'i' } },
+          { description: { $regex: query, $options: 'i' } }
+        ]
+      }
+    }, {
+      $project: {
+        _id: 0
+      }
+    }]).toArray()) as Gallery[]
 }
-//=====================================================
-export async function s3Upload(files: S3UploadInput[]): Promise<S3UploadOutput[]> {
-  const result = await Promise.all(files.map((async file => {
-    const _type = file.type.replace("image/", "")
-    const result = await s3.send(
-      new PutObjectCommand({
-        Bucket: process.env.S3_BUCKET_NAME,
-        Key: `${process.env.S3_PUBLIC_BUCKET_DIRECTORY}${file.name}.${_type}`,
-        Body: file.body,
-      })
-    );
-    if (result.$metadata.httpStatusCode !== 200) {
-      return undefined
-    }
-    return {
-      source: `${process.env.S3_BASE_PUBLIC_BUCKET_URL}${file.name}.${_type}`,
-      name: file.name,
-      size: file.size,
-      type: file.type
-    }
-  })))
-  return result.filter(el => el !== undefined) as S3UploadOutput[]
+export async function createOneGallery(gallery: Gallery): Promise<Gallery> {
+  await (await clientPromise).db("car-wash").collection("gallery").insertOne(gallery)
+  return gallery
 }
 
+export async function updateOneGallery(id: string, gallery: Partial<Gallery>): Promise<Partial<Gallery>> {
+  await (await clientPromise).db("car-wash").collection("gallery").updateOne({ uuid: id }, { $set: gallery })
+  return gallery
+}
+export async function deleteOneGallery(id: string): Promise<Partial<void>> {
+  await (await clientPromise).db("car-wash").collection("gallery").deleteOne({ uuid: id })
+}
+export async function fetchGalleryById(uuid: string): Promise<Gallery> {
+  const gallery = await (await clientPromise).db("car-wash").collection("gallery").findOne({ uuid }, { projection: { _id: 0 } })
+  return gallery as unknown as Gallery
+}

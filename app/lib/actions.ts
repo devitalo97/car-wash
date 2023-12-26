@@ -1,15 +1,16 @@
 'use server';
 
 import { z } from 'zod';
-import { createOneOrder, createOneSchedule, createOneService, createOneUser, createOneUserByEmail, createStripePrice, createStripeProductAndPrice, deactivateStripePrice, deactivateStripeProduct, deleteOneSchedule, deleteOneService, fetchServiceById, fetchUserByEmail, pushInteractionsOnOrderByUUID, pushOrderOnUserByUUID, s3Upload, updateOneOrderByStripeSessionId, updateOneSchedule, updateOneService, updateStripeProduct } from './data';
+import { createOneGallery, createOneOrder, createOneSchedule, createOneService, createOneUser, createOneUserByEmail, createStripePrice, createStripeProductAndPrice, deactivateStripePrice, deactivateStripeProduct, deleteOneGallery, deleteOneSchedule, deleteOneService, fetchGalleryById, fetchScheduleById, fetchServiceById, fetchUserByEmail, pushInteractionsOnOrderByUUID, pushOrderOnUserByUUID, updateOneGallery, updateOneOrderByStripeSessionId, updateOneSchedule, updateOneService, updateStripeProduct } from './data';
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { auth, signIn, signOut } from '@/auth';
 import Stripe from 'stripe'
-import { Order, Service, User } from './definitions';
+import { Gallery, Image, Order, Service, User } from './definitions';
 import bcrypt from 'bcrypt'
 import { createProtocol } from '../utils/createProtocol';
+import { UploadFileInS3Output, s3Delete, uploadFileInS3 } from './s3';
 
 const CreateServiceFormSchema = z.object({
   uuid: z.string(),
@@ -74,7 +75,7 @@ export async function updateService(id: string, formData: FormData) {
   const files = Object.entries(formDataValue).filter(([key]) => key.includes("file_upload")).map(([, value]) => value)
   const filesUploaded = await uploadFileInS3(files as File[])
 
-  const oldUpload = Object.entries(formDataValue).filter(([key]) => key.includes("old_upload")).map(([, value]) => value) as unknown as UploadFileInS3Output[]
+  const oldUpload = Object.entries(formDataValue).filter(([key]) => key.includes("old_upload")).map(([, value]) => JSON.parse(value as string)) as unknown as UploadFileInS3Output[]
 
 
   //validando e montando o objeto do service
@@ -116,12 +117,14 @@ export async function updateService(id: string, formData: FormData) {
   redirect(`/dashboard/service/${id}`)
 }
 
-export async function deleteService(service: Service) {
+export async function deleteService(id: string) {
+  const old = await fetchServiceById(id)
   try {
-    await deleteOneService(service.uuid)
+    await deleteOneService(old.uuid)
     await Promise.all([
-      deactivateStripePrice(service.stripe_price_id!),
-      deactivateStripeProduct(service.stripe_product_id!)
+      deactivateStripePrice(old.stripe_price_id!),
+      deactivateStripeProduct(old.stripe_product_id!),
+      s3Delete(old.images)
     ])
   } catch (error) {
     throw error;
@@ -378,27 +381,81 @@ export async function registerUser(options: RegisterOptions, formData: FormData)
 }
 
 
+const CreateGalleryFormSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  file_upload: z.any()
+});
 
-type UploadFileInS3Output = {
-  source: string
-  name: string
-  size: number
-  type: string
-}
-export async function uploadFileInS3(files: File[]): Promise<UploadFileInS3Output[]> {
-  const _files = []
-  for (let f = 0; f < files.length; f++) {
-    const bytes = await files[f].arrayBuffer()
-    const buffer = Buffer.from(bytes);
-    _files.push({
-      name: files[f].name,
-      type: files[f].type,
-      size: files[f].size,
-      body: buffer
-    })
+export async function createGallery(formData: FormData) {
+  const formDataValue = Object.fromEntries(formData.entries())
+  const files = Object.entries(formDataValue).filter(([key]) => key.includes("file_upload")).map(([, value]) => value)
+  const filesUploaded = await uploadFileInS3(files as File[])
+  const { name, description } = CreateGalleryFormSchema.parse(formDataValue);
+  const created_at = new Date().toISOString()
+  const uuid = uuidv4()
+  const gallery = {
+    name,
+    description,
+    uuid,
+    created_at,
+    media: filesUploaded as Image[],
   }
-  return await s3Upload(_files)
+
+  await createOneGallery(gallery as Gallery)
+
+  revalidatePath('/dashboard/gallery')
 }
+
+
+const UpdateGalleryFormSchema = z.object({
+  name: z.string(),
+  description: z.string(),
+  file_upload: z.any(),
+  old_upload: z.any()
+});
+export async function updateGallery(id: string, formData: FormData) {
+  const formDataValue = Object.fromEntries(formData.entries())
+
+  //upload de novas imanges
+
+  const files = Object.entries(formDataValue).filter(([key]) => key.includes("file_upload")).map(([, value]) => value)
+  const filesUploaded = await uploadFileInS3(files as File[])
+
+  const oldUpload = Object.entries(formDataValue).filter(([key]) => key.includes("old_upload")).map(([, value]) => JSON.parse(value as string)) as unknown as UploadFileInS3Output[]
+
+
+  //validando e montando o objeto do gallery
+  const { name, description } = UpdateGalleryFormSchema.parse(formDataValue);
+  const gallery = {
+    name,
+    description,
+    media: [...filesUploaded, ...oldUpload],
+  }
+
+  try {
+    await updateOneGallery(id, gallery)
+  } catch (error) {
+    throw error
+  }
+  revalidatePath(`/dashboard/gallery/${id}/edit`)
+  redirect(`/dashboard/gallery/${id}`)
+}
+
+export async function deleteGallery(id: string) {
+  try {
+    const old = await fetchGalleryById(id)
+    await deleteOneGallery(old.uuid)
+    await s3Delete(old.media)
+  } catch (error) {
+    throw error;
+  }
+  revalidatePath(`/dashboard/gallery`)
+  redirect(`/dashboard/gallery`)
+}
+
+
+
 
 
 

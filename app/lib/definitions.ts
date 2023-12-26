@@ -10,11 +10,13 @@ export type Service = {
   metadata: Metadata
 }
 
-type Image = {
+export type Image = {
   source: string;
   name: string;
   size: number;
   type: string;
+  height?: number;
+  width?: number;
 }
 
 type Metadata = {
@@ -101,4 +103,19 @@ export type Schedule = {
   created_at: string
   order_uuid?: string
 }
+
+
+
+// ======================================================================
+
+
+
+export type Gallery = {
+  uuid: string
+  name: string
+  media: Image[]
+  description?: string
+  location?: string
+}
+
 

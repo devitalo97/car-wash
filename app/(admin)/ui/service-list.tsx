@@ -14,7 +14,7 @@ export default async function ServiceList({
     return <p className="mt-4 text-gray-400">No data available.</p>;
   }
   return (
-    <main className="lg:pr-96">
+    <main>
       <header className="flex items-center justify-between border-b border-white/5 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
         <h1 className="text-base font-semibold leading-7 text-white">
           Serviços
@@ -29,6 +29,15 @@ export default async function ServiceList({
             key={service.uuid}
             className="relative flex items-center space-x-4 px-4 py-4 sm:px-6 lg:px-8 hover:bg-white/20"
           >
+            {service.images.length && (
+              <div className="flex min-w-0 gap-x-4">
+                <img
+                  className="h-12 w-12 flex-none rounded-full bg-gray-50 border-none"
+                  src={service.images[0].source}
+                  alt=""
+                />
+              </div>
+            )}
             <div className="min-w-0 flex-auto">
               <div className="flex items-center gap-x-3">
                 <h2 className="min-w-0 text-sm font-semibold leading-6 text-white">
